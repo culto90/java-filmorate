@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<UserDto> all() {
+    public List<UserDto> getAll() {
         List<User> users = userService.getAllUsers();
         return users.stream()
                 .map(toUserDtoConverter::convert)
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public UserDto one(@PathVariable Long id) {
+    public UserDto getOne(@PathVariable Long id) {
         return toUserDtoConverter.convert(userService.findUserById(id));
     }
 

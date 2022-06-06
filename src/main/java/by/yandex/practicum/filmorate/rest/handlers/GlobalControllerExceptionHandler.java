@@ -7,6 +7,7 @@ import by.yandex.practicum.filmorate.exceptions.UserServiceException;
 import by.yandex.practicum.filmorate.models.ErrorInfo;
 import by.yandex.practicum.filmorate.rest.converters.ErrorInfoToErrorInfoDtoConverter;
 import by.yandex.practicum.filmorate.rest.dto.ErrorInfoDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
     private final ErrorInfoToErrorInfoDtoConverter errorInfoDtoConverter;
@@ -32,6 +34,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     @ExceptionHandler(value = UserServiceException.class)
     protected ResponseEntity<Object> handleUserServiceException(UserServiceException ex, WebRequest request) {
+        log.info(ex.getMessage());
         ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
         ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
@@ -39,6 +42,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     @ExceptionHandler(value = FilmServiceException.class)
     protected ResponseEntity<Object> handleFilmServiceException(FilmServiceException ex, WebRequest request) {
+        log.info(ex.getMessage());
         ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
         ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
@@ -46,6 +50,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     @ExceptionHandler(value = DtoConverterException.class)
     protected ResponseEntity<Object> handleFilmServiceException(DtoConverterException ex, WebRequest request) {
+        log.info(ex.getMessage());
         ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
         ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
@@ -63,6 +68,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
         String errorMessage = String.join(" ", errList);
+        log.info(errorMessage);
         ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), errorMessage);
         ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
         return new ResponseEntity<>(errorInfoDto, headers, status);

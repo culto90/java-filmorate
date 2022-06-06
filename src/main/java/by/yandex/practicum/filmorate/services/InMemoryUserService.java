@@ -2,15 +2,17 @@ package by.yandex.practicum.filmorate.services;
 
 import by.yandex.practicum.filmorate.exceptions.UserServiceException;
 import by.yandex.practicum.filmorate.models.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Slf4j
 @Service
 public class InMemoryUserService implements UserService {
-    private static AtomicLong atomicLong = new AtomicLong(1);
-    private Map<Long, User> users;
+    private static final AtomicLong atomicLong = new AtomicLong(1);
+    private final Map<Long, User> users;
 
     public InMemoryUserService() {
         users = new HashMap<>();
@@ -39,6 +41,7 @@ public class InMemoryUserService implements UserService {
         long id = atomicLong.getAndIncrement();
         User user = new User(id, newUser.getEmail(), newUser.getLogin(), newUser.getName(), newUser.getBirthday());
         users.put(id, user);
+        log.info("Added new user: " + user.toString());
         return user;
     }
 
@@ -52,12 +55,15 @@ public class InMemoryUserService implements UserService {
         if (findUserWithSameLoginEmail(newUser) != null) {
             throw new UserServiceException("User with same login/email already exists.");
         }
+        log.info("Updated user: old value: " + foundUser.toString());
 
         foundUser.setEmail(newUser.getEmail());
         foundUser.setName(newUser.getName());
         foundUser.setLogin(newUser.getLogin());
         foundUser.setBirthday(newUser.getBirthday());
         users.put(foundUser.getId(), foundUser);
+
+        log.info("Updated user: new value: " + foundUser.toString());
         
         return foundUser;
     }
