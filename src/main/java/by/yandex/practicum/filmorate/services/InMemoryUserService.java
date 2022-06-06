@@ -64,7 +64,7 @@ public class InMemoryUserService implements UserService {
         users.put(foundUser.getId(), foundUser);
 
         log.info("Updated user: new value: " + foundUser.toString());
-        
+
         return foundUser;
     }
 
