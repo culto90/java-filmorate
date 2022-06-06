@@ -2,11 +2,14 @@ package by.yandex.practicum.filmorate.services;
 
 import by.yandex.practicum.filmorate.exceptions.UserServiceException;
 import by.yandex.practicum.filmorate.models.User;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+
 
 @Slf4j
 @Service
@@ -56,15 +59,12 @@ public class InMemoryUserService implements UserService {
             throw new UserServiceException("User with same login/email already exists.");
         }
         log.info("Updated user: old value: " + foundUser.toString());
-
         foundUser.setEmail(newUser.getEmail());
         foundUser.setName(newUser.getName());
         foundUser.setLogin(newUser.getLogin());
         foundUser.setBirthday(newUser.getBirthday());
         users.put(foundUser.getId(), foundUser);
-
         log.info("Updated user: new value: " + foundUser.toString());
-        
         return foundUser;
     }
 

@@ -2,7 +2,9 @@ package by.yandex.practicum.filmorate.services;
 
 import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
 import by.yandex.practicum.filmorate.models.Film;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,20 +50,16 @@ public class InMemoryFilmService implements FilmService {
     @Override
     public Film updateFilm(Film film) throws FilmServiceException {
         Film foundFilm = films.get(film.getId());
-
         if (foundFilm == null) {
             throw new FilmServiceException("Film with this id is not found.");
         }
         log.info("Updated film: old value: " + foundFilm.toString());
-
         foundFilm.setReleaseDate(film.getReleaseDate());
         foundFilm.setName(film.getName());
         foundFilm.setDescription(film.getDescription());
         foundFilm.setDuration(film.getDuration());
         foundFilm.setRate(film.getRate());
-
         log.info("Updated film: new value: " + foundFilm.toString());
-
         return foundFilm;
     }
 }
