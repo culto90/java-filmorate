@@ -41,7 +41,7 @@ public class InMemoryUserService implements UserService {
         long id = atomicLong.getAndIncrement();
         User user = new User(id, newUser.getEmail(), newUser.getLogin(), newUser.getName(), newUser.getBirthday());
         users.put(id, user);
-        log.info("Added new user: " + user.toString());
+        log.info("Added new user: {}", user.toString());
         return user;
     }
 
@@ -55,7 +55,7 @@ public class InMemoryUserService implements UserService {
         if (findUserWithSameLoginEmail(newUser) != null) {
             throw new UserServiceException("User with same login/email already exists.");
         }
-        log.info("Updated user: old value: " + foundUser.toString());
+        log.info("Updated user: old value: {}", foundUser.toString());
 
         foundUser.setEmail(newUser.getEmail());
         foundUser.setName(newUser.getName());
@@ -63,7 +63,7 @@ public class InMemoryUserService implements UserService {
         foundUser.setBirthday(newUser.getBirthday());
         users.put(foundUser.getId(), foundUser);
 
-        log.info("Updated user: new value: " + foundUser.toString());
+        log.info("Updated user: new value: {}", foundUser.toString());
 
         return foundUser;
     }

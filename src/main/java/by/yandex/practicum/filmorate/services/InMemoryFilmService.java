@@ -41,7 +41,7 @@ public class InMemoryFilmService implements FilmService {
         Film newFilm = new Film(id, film.getName(),
                 film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getRate());
         films.put(newFilm.getId(), newFilm);
-        log.info("Added new film: " + film.toString());
+        log.info("Added new film: {}", film.toString());
         return newFilm;
     }
 
@@ -52,7 +52,7 @@ public class InMemoryFilmService implements FilmService {
         if (foundFilm == null) {
             throw new FilmServiceException("Film with this id is not found.");
         }
-        log.info("Updated film: old value: " + foundFilm.toString());
+        log.info("Updated film: old value: {}", foundFilm.toString());
 
         foundFilm.setReleaseDate(film.getReleaseDate());
         foundFilm.setName(film.getName());
@@ -60,7 +60,7 @@ public class InMemoryFilmService implements FilmService {
         foundFilm.setDuration(film.getDuration());
         foundFilm.setRate(film.getRate());
 
-        log.info("Updated film: new value: " + foundFilm.toString());
+        log.info("Updated film: new value: {}", foundFilm.toString());
 
         return foundFilm;
     }
