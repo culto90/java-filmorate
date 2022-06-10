@@ -1,7 +1,10 @@
 package by.yandex.practicum.filmorate.models;
 
+import lombok.ToString;
+
 import java.time.LocalDate;
 
+@ToString
 public class Film {
 
     private long id;

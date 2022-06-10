@@ -29,7 +29,7 @@ public class FilmController {
     }
 
     @GetMapping("/films")
-    public List<FilmDto> all() {
+    public List<FilmDto> getAll() {
         List<Film> films = filmService.getAllFilms();
         List<FilmDto> filmsDto = films.stream()
                 .map(toFilmDtoConverter::convert)
@@ -38,13 +38,13 @@ public class FilmController {
     }
 
     @GetMapping("/films/{id}")
-    public FilmDto one(@PathVariable Long id) {
+    public FilmDto getOne(@PathVariable Long id) {
         FilmDto filmDto = toFilmDtoConverter.convert(filmService.getFilmById(id));
         return filmDto;
     }
 
     @PostMapping("/films")
-    public FilmDto newFilm(@Valid @RequestBody FilmDto newFilmDto) throws FilmServiceException {
+    public FilmDto addFilm(@Valid @RequestBody FilmDto newFilmDto) throws FilmServiceException {
         Film film = toFilmConverter.convert(newFilmDto);
         FilmDto createdFilmDto = toFilmDtoConverter.convert(filmService.addFilm(film));
         return createdFilmDto;
