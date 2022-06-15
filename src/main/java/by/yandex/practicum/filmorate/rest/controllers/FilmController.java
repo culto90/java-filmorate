@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 public class FilmController {
-    private FilmService filmService;
-    private FilmToFilmDtoConverter toFilmDtoConverter;
-    private FilmDtoToFilmConverter toFilmConverter;
+    private final FilmService filmService;
+    private final FilmToFilmDtoConverter toFilmDtoConverter;
+    private final FilmDtoToFilmConverter toFilmConverter;
 
     public FilmController (FilmService filmService,
                            FilmToFilmDtoConverter toFilmDtoConverter,
@@ -31,29 +31,25 @@ public class FilmController {
     @GetMapping("/films")
     public List<FilmDto> getAll() {
         List<Film> films = filmService.getAllFilms();
-        List<FilmDto> filmsDto = films.stream()
+        return films.stream()
                 .map(toFilmDtoConverter::convert)
                 .collect(Collectors.toList());
-        return filmsDto;
     }
 
     @GetMapping("/films/{id}")
     public FilmDto getOne(@PathVariable Long id) {
-        FilmDto filmDto = toFilmDtoConverter.convert(filmService.getFilmById(id));
-        return filmDto;
+        return toFilmDtoConverter.convert(filmService.getFilmById(id));
     }
 
     @PostMapping("/films")
     public FilmDto addFilm(@Valid @RequestBody FilmDto newFilmDto) throws FilmServiceException {
         Film film = toFilmConverter.convert(newFilmDto);
-        FilmDto createdFilmDto = toFilmDtoConverter.convert(filmService.addFilm(film));
-        return createdFilmDto;
+        return toFilmDtoConverter.convert(filmService.addFilm(film));
     }
 
     @PutMapping("/films")
     public FilmDto updateFilm(@Valid @RequestBody FilmDto newFilmDto) throws FilmServiceException {
         Film film = toFilmConverter.convert(newFilmDto);
-        FilmDto updatedFilmDto = toFilmDtoConverter.convert(filmService.updateFilm(film));
-        return updatedFilmDto;
+        return toFilmDtoConverter.convert(filmService.updateFilm(film));
     }
 }

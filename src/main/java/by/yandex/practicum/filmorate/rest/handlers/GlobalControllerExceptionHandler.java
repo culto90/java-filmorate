@@ -1,9 +1,7 @@
 package by.yandex.practicum.filmorate.rest.handlers;
 
 
-import by.yandex.practicum.filmorate.exceptions.DtoConverterException;
-import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
-import by.yandex.practicum.filmorate.exceptions.UserServiceException;
+import by.yandex.practicum.filmorate.exceptions.*;
 import by.yandex.practicum.filmorate.models.ErrorInfo;
 import by.yandex.practicum.filmorate.rest.converters.ErrorInfoToErrorInfoDtoConverter;
 import by.yandex.practicum.filmorate.rest.dto.ErrorInfoDto;
@@ -14,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -31,6 +30,22 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     public GlobalControllerExceptionHandler(ErrorInfoToErrorInfoDtoConverter errorInfoDtoConverter) {
         this.errorInfoDtoConverter = errorInfoDtoConverter;
+    }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    protected ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = FilmNotFoundException.class)
+    protected ResponseEntity<Object> handleFilmNotFoundException(FilmNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(value = UserServiceException.class)

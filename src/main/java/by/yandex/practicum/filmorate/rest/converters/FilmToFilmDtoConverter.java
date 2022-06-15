@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FilmToFilmDtoConverter implements Converter<Film, FilmDto> {
+
     @SneakyThrows
     @Override
     public FilmDto convert(Film film) {

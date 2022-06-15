@@ -7,14 +7,14 @@ import java.time.LocalDate;
 @ToString
 public class Film {
 
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private LocalDate releaseDate;
     private long duration;
     private double rate;
 
-    public Film(long id, String name, String description, LocalDate releaseDate, long duration) {
+    public Film(Long id, String name, String description, LocalDate releaseDate, long duration) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -22,7 +22,7 @@ public class Film {
         this.duration = duration;
     }
 
-    public Film(long id, String name, String description, LocalDate releaseDate, long duration, double rate) {
+    public Film(Long id, String name, String description, LocalDate releaseDate, long duration, double rate) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -35,7 +35,7 @@ public class Film {
     public Film() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -47,32 +47,32 @@ public class Film {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public double getRate() {
-        return this.rate;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
     public long getDuration() {
         return duration;
+    }
+
+    public double getRate() {
+        return this.rate;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setReleaseDate(LocalDate releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public void setDuration(long duration) {
