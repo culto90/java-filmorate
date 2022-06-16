@@ -29,7 +29,6 @@ public class UserController {
     @Autowired
     public UserController(UserService userService,
                           FriendshipService friendshipService,
-                          UserToUserDtoConverter userMapper,
                           UserToUserDtoConverter toUserDtoConverter,
                           UserDtoToUserConverter dtoToUserConverter,
                           FriendshipToFriendshipDtoConverter friendshipConverter) {
@@ -66,9 +65,9 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends")
-    public List<FriendshipDto> getAllFriends(@PathVariable long id) {
+    public List<UserDto> getAllFriends(@PathVariable long id) {
         return friendshipService.getFriendList(id).stream()
-                        .map(friendshipConverter::convert)
+                        .map(toUserDtoConverter::convert)
                         .collect(Collectors.toList());
     }
 
@@ -88,6 +87,4 @@ public class UserController {
     public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
         friendshipService.removeFriend(id, friendId);
     }
-
-
 }

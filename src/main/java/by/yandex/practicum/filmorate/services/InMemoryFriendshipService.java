@@ -103,10 +103,11 @@ public class InMemoryFriendshipService implements FriendshipService {
     }
 
     @Override
-    public List<Friendship> getFriendList(Long userId) {
+    public List<User> getFriendList(Long userId) {
         List<Friendship> friendships = friendshipStorage.getAll();
         return friendships.stream()
                 .filter(f -> f.getUser().getId() == userId)
+                .map(Friendship::getFriend)
                 .collect(Collectors.toList());
     }
 
