@@ -1,9 +1,9 @@
 package by.yandex.practicum.filmorate.models;
 
 public class Friendship {
-    long id;
-    User user;
-    User friend;
+    private long id;
+    private User user;
+    private User friend;
 
     public Friendship(User user, User friend) {
         this.user = user;
