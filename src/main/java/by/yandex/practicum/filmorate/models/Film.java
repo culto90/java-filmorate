@@ -1,18 +1,22 @@
 package by.yandex.practicum.filmorate.models;
 
-import lombok.ToString;
-
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
-@ToString
 public class Film {
-
     private Long id;
     private String name;
     private String description;
     private LocalDate releaseDate;
     private long duration;
     private double rate;
+    private List<Like> likes;
+
+    public Film() {
+        this.likes = new ArrayList<>();
+    }
 
     public Film(Long id, String name, String description, LocalDate releaseDate, long duration) {
         this.id = id;
@@ -20,6 +24,7 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.likes = new ArrayList<>();
     }
 
     public Film(Long id, String name, String description, LocalDate releaseDate, long duration, double rate) {
@@ -29,10 +34,7 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.rate = rate;
-    }
-
-
-    public Film() {
+        this.likes = new ArrayList<>();
     }
 
     public Long getId() {
@@ -81,5 +83,43 @@ public class Film {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public void setLikeList(List<Like> likes) {
+        this.likes = new ArrayList<>(likes);
+    }
+
+    public void addLike(Like like) {
+        this.likes.add(like);
+    }
+
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public int getLikeCount() {
+        return likes.size();
+    }
+
+
+    public Like getLikeById(Long likeId) {
+        return likes.stream()
+                .filter(l -> l.getId() == likeId)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void removeLike(Like like) {
+        this.likes.remove(like);
+    }
+
+    @Override
+    public String toString() {
+        return "Film(" +
+                "id=" + this.getId() + ", " +
+                "name=" + this.getName() + ", " +
+                "description=" + this.getDescription() + ", " +
+                "releaseDate=" + this.getReleaseDate().format(DateTimeFormatter.ISO_DATE) + ", " +
+                "duration=" + this.getDuration() + ")";
     }
 }

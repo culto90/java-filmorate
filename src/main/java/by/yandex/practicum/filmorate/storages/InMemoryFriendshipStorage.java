@@ -1,7 +1,7 @@
 package by.yandex.practicum.filmorate.storages;
 
 import by.yandex.practicum.filmorate.models.Friendship;
-import by.yandex.practicum.filmorate.services.IdGeneratorService;
+import by.yandex.practicum.filmorate.services.id_generators.IdGeneratorService;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     public Friendship put(Friendship newFriendship) {
         Long id = newFriendship.getId();
         if (id == null || id == 0) {
-            newFriendship.setId((Long) idGenerator.getId());
+            newFriendship.setId((Long) idGenerator.getFriendshipId());
         }
         friendships.put(newFriendship.getId(), newFriendship);
         return newFriendship;

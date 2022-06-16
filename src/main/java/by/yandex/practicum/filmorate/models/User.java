@@ -1,12 +1,10 @@
 package by.yandex.practicum.filmorate.models;
 
-import lombok.ToString;
-
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString
 public class User {
     private Long id;
     private String email;
@@ -14,9 +12,11 @@ public class User {
     private String name;
     private LocalDate birthday;
     private List<Friendship> friendships;
+    private List<Like> likes;
 
     public User() {
-        friendships = new ArrayList<>();
+        this.friendships = new ArrayList<>();
+        this.likes = new ArrayList<>();
     }
 
     public User (Long id, String email, String login, String name, LocalDate birthday) {
@@ -25,7 +25,8 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-        friendships = new ArrayList<>();
+        this.friendships = new ArrayList<>();
+        this.likes = new ArrayList<>();
     }
 
     public void setName(String name) {
@@ -80,8 +81,16 @@ public class User {
         this.friendships = new ArrayList<>(friendships);
     }
 
+    public void setLikeList(List<Like> likes) {
+        this.likes = new ArrayList<>(likes);
+    }
+
     public void addFriendship(Friendship friendship) {
         this.friendships.add(friendship);
+    }
+
+    public void addLike(Like like) {
+        this.likes.add(like);
     }
 
     public Friendship getFriendshipById(Long friendshipId) {
@@ -91,9 +100,33 @@ public class User {
                 .orElse(null);
     }
 
+    public List<Like> getLikes() {
+        return likes;
+    }
+
+    public Like getLikeById(Long likeId) {
+        return likes.stream()
+                .filter(l -> l.getId() == likeId)
+                .findFirst()
+                .orElse(null);
+    }
+
     public void removeFriendship(Friendship friendship) {
         this.friendships.remove(friendship);
     }
 
+    public void removeLike(Like like) {
+        this.likes.remove(like);
+    }
 
+    @Override
+    public String toString() {
+        return "User(" +
+                "id=" + this.getId() + ", " +
+                "email=" + this.getEmail() + ", " +
+                "login=" + this.getLogin() + ", " +
+                "name=" + this.getName() + ", " +
+                "birthday=" + this.getBirthday().format(DateTimeFormatter.ISO_LOCAL_DATE) +
+                ")";
+    }
 }

@@ -1,8 +1,5 @@
 package by.yandex.practicum.filmorate.models;
 
-import lombok.ToString;
-
-@ToString
 public class Friendship {
     long id;
     User user;
@@ -22,6 +19,7 @@ public class Friendship {
     public long getId() {
         return this.id;
     }
+
     public User getUser() {
         return this.user;
     }

@@ -1,7 +1,7 @@
 package by.yandex.practicum.filmorate.storages;
 
 import by.yandex.practicum.filmorate.models.Film;
-import by.yandex.practicum.filmorate.services.IdGeneratorService;
+import by.yandex.practicum.filmorate.services.id_generators.IdGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film put(Film newFilm) {
         Long id = newFilm.getId();
         if (id == null || id == 0) {
-            newFilm.setId((Long) idGenerator.getId());
+            newFilm.setId((Long) idGenerator.getFilmId());
         }
         films.put(newFilm.getId(), newFilm);
         return newFilm;

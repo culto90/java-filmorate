@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,9 +52,6 @@ public class InMemoryFriendshipService implements FriendshipService {
         Friendship friendshipForFriend = friendshipStorage.put(new Friendship(friend, user));
         user.addFriendship(friendshipForUser);
         friend.addFriendship(friendshipForFriend);
-        List<Friendship> createdFriendships = new ArrayList<>();
-        createdFriendships.add(friendshipForUser);
-        createdFriendships.add(friendshipForFriend);
         log.info("Added new friendship: {}", friendshipForUser);
         return friendshipForUser;
     }
@@ -118,12 +114,12 @@ public class InMemoryFriendshipService implements FriendshipService {
 
         List<User> userFriends = user.getFriendships()
                 .stream()
-                .map(f -> f.getFriend())
+                .map(Friendship::getFriend)
                 .collect(Collectors.toList());
 
         List<User> otherFriends = other.getFriendships()
                 .stream()
-                .map(f -> f.getFriend())
+                .map(Friendship::getFriend)
                 .collect(Collectors.toList());
 
         userFriends.retainAll(otherFriends);

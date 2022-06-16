@@ -19,11 +19,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 public class FriendshipDtoSerializerTest {
 
     @Test
     public void serialize() throws IOException {
+        String expected = "{\"id\":3,\"user\":{\"id\":1,\"email\":\"email@example.com\",\"login\":\"loginName\",\"name\":\"userName\",\"birthday\":\"2022-06-16\"},\"friend\":{\"id\":2,\"email\":\"friend@example.com\",\"login\":\"friendLogin\",\"name\":\"friendName\",\"birthday\":\"2022-06-16\"}}";
+
         User user = new User();
         user.setId(1L);
         user.setEmail("email@example.com");
@@ -53,5 +57,6 @@ public class FriendshipDtoSerializerTest {
         new FriendshipDtoSerializer().serialize(friendshipDto, jsonGenerator, serializerProvider);
         jsonGenerator.flush();
         System.out.println(jsonWriter);
+        assertEquals(expected, jsonWriter.toString());
     }
 }

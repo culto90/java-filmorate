@@ -8,12 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
 @Service
 public class InMemoryFilmService implements FilmService {
+    private final static Integer POPULAR_FILM_LIMIT = 10;
     private final FilmStorage filmStorage;
 
     @Autowired
@@ -27,10 +30,23 @@ public class InMemoryFilmService implements FilmService {
     }
 
     @Override
+    public List<Film> getPopularFilms(int count) {
+        int limit = count;
+        if (limit == 0) {
+            limit = POPULAR_FILM_LIMIT;
+        }
+        return filmStorage.getAll()
+                .stream()
+                .sorted(Comparator.comparing(Film::getLikeCount).reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Film getFilmById(long id) {
         Film film = filmStorage.getById(id);
         if (film == null) {
-            throw new FilmNotFoundException("Film with id = '\" + id + \"' not found.");
+            throw new FilmNotFoundException("Film with id = '" + id + "' not found.");
         }
         return film;
     }
@@ -51,11 +67,12 @@ public class InMemoryFilmService implements FilmService {
     }
 
     @Override
-    public Film updateFilm(Film updatedFilm) throws FilmServiceException {
-        Film foundFilm = filmStorage.getById(updatedFilm.getId());
+    public Film updateFilm(Film updatedFilm) {
+        Long id = updatedFilm.getId();
+        Film foundFilm = filmStorage.getById(id);
 
         if (foundFilm == null) {
-            throw new FilmServiceException("Film with this id is not found.");
+            throw new FilmNotFoundException("Film with id = '" + id + "' not found.");
         }
 
         log.info("Updated film: old value: {}", foundFilm);

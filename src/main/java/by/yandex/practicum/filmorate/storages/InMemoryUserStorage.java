@@ -1,7 +1,7 @@
 package by.yandex.practicum.filmorate.storages;
 
 import by.yandex.practicum.filmorate.models.User;
-import by.yandex.practicum.filmorate.services.IdGeneratorService;
+import by.yandex.practicum.filmorate.services.id_generators.IdGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +45,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User put(User newUser) {
         Long id = newUser.getId();
         if (id == null || id == 0) {
-            newUser.setId((Long) idGenerator.getId());
+            newUser.setId((Long) idGenerator.getUserId());
         }
         users.put(newUser.getId(), newUser);
         return newUser;

@@ -23,6 +23,7 @@ public class UserToUserDtoConverter implements Converter<User, UserDto> {
         userDto.setName(user.getName());
         userDto.setBirthday(user.getBirthday());
         userDto.setFriendships(user.getFriendships());
+        userDto.setLikes(user.getLikes());
         return userDto;
     }
 
