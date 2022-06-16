@@ -43,11 +43,5 @@ public class FriendshipDtoSerializer extends StdSerializer<FriendshipDto> {
                 .getBirthday().format(DateTimeFormatter.ISO_DATE));
         jgen.writeEndObject();
         jgen.writeEndObject();
-
-        //jgen.writeStartArray();
-        //for (FriendshipDto friendshipDto : friendshipDtos) {
-        //
-        //}
-        //jgen.writeEndArray();
     }
 }

@@ -120,13 +120,13 @@ public class InMemoryFriendshipService implements FriendshipService {
                 .stream()
                 .map(f -> f.getFriend())
                 .collect(Collectors.toList());
+
         List<User> otherFriends = other.getFriendships()
                 .stream()
                 .map(f -> f.getFriend())
                 .collect(Collectors.toList());
 
         userFriends.retainAll(otherFriends);
-
         return userFriends;
     }
 
@@ -137,6 +137,5 @@ public class InMemoryFriendshipService implements FriendshipService {
                     || (f.getUser().getId() == friendId && f.getFriend().getId() == userId))
                 .collect(Collectors.toList());
     }
-
 
 }
