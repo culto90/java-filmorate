@@ -111,25 +111,22 @@ public class InMemoryFriendshipService implements FriendshipService {
     }
 
     @Override
-    public List<Friendship> getSharedFriends(Long userId, Long otherId) {
+    public List<User> getSharedFriends(Long userId, Long otherId) {
         User user = userService.getUserById(userId);
         User other = userService.getUserById(otherId);
-        int userFriendCount = user.getFriendships().size();
-        int otherFriendCount = other.getFriendships().size();
 
+        List<User> userFriends = user.getFriendships()
+                .stream()
+                .map(f -> f.getFriend())
+                .collect(Collectors.toList());
+        List<User> otherFriends = other.getFriendships()
+                .stream()
+                .map(f -> f.getFriend())
+                .collect(Collectors.toList());
 
+        userFriends.retainAll(otherFriends);
 
-        if (userFriendCount > otherFriendCount) {
-            List<Friendship> userFriendships = user.getFriendships();
-
-
-        }
-
-        List<Friendship> friendships = friendshipStorage.getAll();
-        //return friendships.stream()
-        //        .filter(f -> f.getFriend().);
-
-        return friendships;
+        return userFriends;
     }
 
     private List<Friendship> findFriendships(Long userId, Long friendId) {

@@ -10,7 +10,6 @@ import by.yandex.practicum.filmorate.rest.converters.UserToUserDtoConverter;
 import by.yandex.practicum.filmorate.services.FriendshipService;
 import by.yandex.practicum.filmorate.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,10 +72,10 @@ public class UserController {
                         .collect(Collectors.toList());
     }
 
-    @GetMapping()
-    public List<FriendshipDto> getSharedFriends(@PathVariable long id, @PathVariable long otherId) {
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<UserDto> getSharedFriends(@PathVariable long id, @PathVariable long otherId) {
         return friendshipService.getSharedFriends(id, otherId).stream()
-                .map(friendshipConverter::convert)
+                .map(toUserDtoConverter::convert)
                 .collect(Collectors.toList());
     }
 
