@@ -12,7 +12,7 @@ import java.util.Map;
 @Component
 public class InMemoryLikeStorage implements LikeStorage {
     private final IdGeneratorService idGenerator;
-    Map<Long, Like> likes;
+    private final Map<Long, Like> likes;
 
 
     public InMemoryLikeStorage(IdGeneratorService idGenerator) {
@@ -30,7 +30,7 @@ public class InMemoryLikeStorage implements LikeStorage {
     public Like getById(Long id) {
         return likes.values()
                 .stream()
-                .filter(l -> l.getId() == id)
+                .filter(l -> l.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
@@ -38,7 +38,7 @@ public class InMemoryLikeStorage implements LikeStorage {
     @Override
     public Like put(Like like) {
         Long id = like.getId();
-        if (id == null || id == 0) {
+        if (id == null || id.equals(0)) {
             like.setId((Long) idGenerator.getLikeId());
         }
         likes.put(like.getId(), like);

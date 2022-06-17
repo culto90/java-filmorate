@@ -95,7 +95,7 @@ public class InMemoryUserService implements UserService {
         User foundUser = users.stream()
                 .filter(u -> (u.getLogin().equals(userLogin)
                         || u.getEmail().equals(userEmail))
-                        && u.getId() != userid)
+                        && !u.getId().equals(userid))
                 .findFirst()
                 .orElse(null);
 

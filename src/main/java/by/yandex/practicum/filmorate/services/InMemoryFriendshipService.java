@@ -102,7 +102,7 @@ public class InMemoryFriendshipService implements FriendshipService {
     public List<User> getFriendList(Long userId) {
         List<Friendship> friendships = friendshipStorage.getAll();
         return friendships.stream()
-                .filter(f -> f.getUser().getId() == userId)
+                .filter(f -> f.getUser().getId().equals(userId))
                 .map(Friendship::getFriend)
                 .collect(Collectors.toList());
     }
@@ -129,8 +129,8 @@ public class InMemoryFriendshipService implements FriendshipService {
     private List<Friendship> findFriendships(Long userId, Long friendId) {
         List<Friendship> friendships = friendshipStorage.getAll();
         return friendships.stream()
-                .filter(f -> (f.getUser().getId() == userId && f.getFriend().getId() == friendId)
-                    || (f.getUser().getId() == friendId && f.getFriend().getId() == userId))
+                .filter(f -> (f.getUser().getId().equals(userId) && f.getFriend().getId().equals(friendId))
+                    || (f.getUser().getId().equals(friendId) && f.getFriend().getId().equals(userId)))
                 .collect(Collectors.toList());
     }
 

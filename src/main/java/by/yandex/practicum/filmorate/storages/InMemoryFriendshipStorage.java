@@ -28,7 +28,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     public Friendship getById(Long id) {
         return friendships.values()
                 .stream()
-                .filter(f -> f.getId() == id)
+                .filter(f -> f.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
@@ -36,7 +36,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     @Override
     public Friendship put(Friendship newFriendship) {
         Long id = newFriendship.getId();
-        if (id == null || id == 0) {
+        if (id == null || id.equals(0)) {
             newFriendship.setId((Long) idGenerator.getFriendshipId());
         }
         friendships.put(newFriendship.getId(), newFriendship);

@@ -34,7 +34,7 @@ public class InMemoryLikeService implements LikeService {
         }
 
         if (user == null) {
-            throw new LikeServiceException("User cannot be null");
+            throw new LikeServiceException("User cannot be null.");
         }
 
         Like like = findLike(filmId, userId);
@@ -62,7 +62,7 @@ public class InMemoryLikeService implements LikeService {
         }
 
         if (user == null) {
-            throw new LikeServiceException("User cannot be null");
+            throw new LikeServiceException("User cannot be null.");
         }
 
         Like like = findLike(filmId, userId);
@@ -80,8 +80,8 @@ public class InMemoryLikeService implements LikeService {
     public Like findLike(Long filmId, Long userId) {
         return likeStorage.getAll()
                 .stream()
-                .filter(like -> like.getFilm().getId() == filmId
-                        && like.getUser().getId() == userId)
+                .filter(like -> like.getFilm().getId().equals(filmId)
+                        && like.getUser().getId().equals(userId))
                 .findFirst()
                 .orElse(null);
     }
