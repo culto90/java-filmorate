@@ -95,7 +95,7 @@ public class User {
 
     public Friendship getFriendshipById(Long friendshipId) {
         return friendships.stream()
-                .filter(f -> f.getId() == friendshipId)
+                .filter(f -> f.getId().equals(friendshipId))
                 .findFirst()
                 .orElse(null);
     }
@@ -106,7 +106,7 @@ public class User {
 
     public Like getLikeById(Long likeId) {
         return likes.stream()
-                .filter(l -> l.getId() == likeId)
+                .filter(l -> l.getId().equals(likeId))
                 .findFirst()
                 .orElse(null);
     }

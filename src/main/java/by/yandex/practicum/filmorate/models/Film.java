@@ -104,7 +104,7 @@ public class Film {
 
     public Like getLikeById(Long likeId) {
         return likes.stream()
-                .filter(l -> l.getId() == likeId)
+                .filter(l -> l.getId().equals(likeId))
                 .findFirst()
                 .orElse(null);
     }
