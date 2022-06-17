@@ -44,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User put(User newUser) {
         Long id = newUser.getId();
-        if (id == null || id.equals(0)) {
+        if (id == null || id.equals(0L)) {
             newUser.setId((Long) idGenerator.getUserId());
         }
         users.put(newUser.getId(), newUser);

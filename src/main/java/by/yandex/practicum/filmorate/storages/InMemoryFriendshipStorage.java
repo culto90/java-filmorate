@@ -36,7 +36,7 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     @Override
     public Friendship put(Friendship newFriendship) {
         Long id = newFriendship.getId();
-        if (id == null || id.equals(0)) {
+        if (id == null || id.equals(0L)) {
             newFriendship.setId((Long) idGenerator.getFriendshipId());
         }
         friendships.put(newFriendship.getId(), newFriendship);

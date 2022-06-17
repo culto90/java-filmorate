@@ -38,7 +38,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film put(Film newFilm) {
         Long id = newFilm.getId();
-        if (id == null || id.equals(0)) {
+        if (id == null || id.equals(0L)) {
             newFilm.setId((Long) idGenerator.getFilmId());
         }
         films.put(newFilm.getId(), newFilm);

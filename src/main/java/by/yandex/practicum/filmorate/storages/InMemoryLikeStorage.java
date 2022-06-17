@@ -38,7 +38,7 @@ public class InMemoryLikeStorage implements LikeStorage {
     @Override
     public Like put(Like like) {
         Long id = like.getId();
-        if (id == null || id.equals(0)) {
+        if (id == null || id.equals(0L)) {
             like.setId((Long) idGenerator.getLikeId());
         }
         likes.put(like.getId(), like);
