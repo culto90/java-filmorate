@@ -1,10 +1,16 @@
 package by.yandex.practicum.filmorate.rest.dto;
 
+import by.yandex.practicum.filmorate.models.Like;
+import by.yandex.practicum.filmorate.rest.serializers.FilmDtoSerializer;
 import by.yandex.practicum.filmorate.rest.validators.constraints.ReleaseDateConstraint;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@JsonSerialize(using = FilmDtoSerializer.class)
 public class FilmDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
     private long id;
@@ -19,6 +25,7 @@ public class FilmDto {
     private long duration;
     @Digits(integer = Integer.MAX_VALUE, fraction = 1)
     private double rate;
+    private List<Like> likes;
 
     public long getId() {
         return id;
@@ -66,5 +73,13 @@ public class FilmDto {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = new ArrayList<>(likes);
+    }
+
+    public List<Like> getLikes() {
+        return likes;
     }
 }

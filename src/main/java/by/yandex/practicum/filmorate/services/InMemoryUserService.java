@@ -1,84 +1,104 @@
 package by.yandex.practicum.filmorate.services;
 
+import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.UserServiceException;
 import by.yandex.practicum.filmorate.models.User;
+import by.yandex.practicum.filmorate.storages.UserStorage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @Service
 public class InMemoryUserService implements UserService {
-    private static final AtomicLong atomicLong = new AtomicLong(1);
-    private final Map<Long, User> users;
+    private final UserStorage userStorage;
 
-    public InMemoryUserService() {
-        users = new HashMap<>();
+    @Autowired
+    public InMemoryUserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
     @Override
     public List<User> getAllUsers() {
-        return new ArrayList<>(users.values());
+        return userStorage.getAll();
     }
 
     @Override
-    public User findUserById(long id) {
-        return users.get(id);
-    }
-
-    @Override
-    public User addUser(User newUser) throws UserServiceException {
-        if (users.containsKey(newUser.getId())) {
-            throw new UserServiceException("User with this id already exists.");
+    public User getUserById(long id) throws UserNotFoundException {
+        User user = userStorage.getById(id);
+        if (user == null) {
+            throw new UserNotFoundException("User with id = '" + id + "' not found.");
         }
-
-        if (findUserWithSameLoginEmail(newUser) != null) {
-            throw new UserServiceException("User with same login/email already exists.");
-        }
-
-        long id = atomicLong.getAndIncrement();
-        User user = new User(id, newUser.getEmail(), newUser.getLogin(), newUser.getName(), newUser.getBirthday());
-        users.put(id, user);
-        log.info("Added new user: {}", user.toString());
         return user;
     }
 
     @Override
-    public User updateUser(User newUser) throws UserServiceException {
-        User foundUser = users.get(newUser.getId());
-        if (foundUser == null) {
-            throw new UserServiceException("User with this id is not found.");
+    public User addUser(User newUser) throws UserServiceException {
+        if (newUser == null) {
+            throw new UserServiceException("Cannot add empty user.");
         }
 
-        if (findUserWithSameLoginEmail(newUser) != null) {
+        Long id = newUser.getId();
+        if (id != null) {
+            if (userStorage.getById(id) != null) {
+                throw new UserServiceException("User with this id already exists.");
+            }
+        }
+
+        if (userStorage.getByEmail(newUser.getEmail()) != null) {
             throw new UserServiceException("User with same login/email already exists.");
         }
-        log.info("Updated user: old value: {}", foundUser.toString());
 
-        foundUser.setEmail(newUser.getEmail());
-        foundUser.setName(newUser.getName());
-        foundUser.setLogin(newUser.getLogin());
-        foundUser.setBirthday(newUser.getBirthday());
-        users.put(foundUser.getId(), foundUser);
-
-        log.info("Updated user: new value: {}", foundUser.toString());
-
-        return foundUser;
+        log.info("User added: {}", newUser);
+        return userStorage.put(newUser);
     }
 
-    private User findUserWithSameLoginEmail(User user) {
-        long userid = user.getId();
+    @Override
+    public User updateUser(User updatedUser) throws UserServiceException {
+        if (updatedUser == null) {
+            throw new UserServiceException("Cannot update empty user.");
+        }
+
+        Long id = updatedUser.getId();
+        if (id == null) {
+            throw new UserServiceException("Cannot update user with empty id.");
+        }
+
+        User foundUser = userStorage.getById(id);
+        if (foundUser == null) {
+            throw new UserNotFoundException("User for update is not found.");
+        }
+
+        if (isHaveUserWithSameLoginEmail(updatedUser)) {
+            throw new UserServiceException("User with same login/email already exists.");
+        }
+
+        log.info("Updated user: old value: {}", foundUser);
+        foundUser.setEmail(updatedUser.getEmail());
+        foundUser.setName(updatedUser.getName());
+        foundUser.setLogin(updatedUser.getLogin());
+        foundUser.setBirthday(updatedUser.getBirthday());
+        foundUser.setFriendshipList(updatedUser.getFriendships());
+        log.info("Updated user: new value: {}", foundUser);
+
+        return userStorage.put(foundUser);
+    }
+
+    private boolean isHaveUserWithSameLoginEmail(User user) {
+        List<User> users = userStorage.getAll();
+        Long userid = user.getId();
         String userLogin = user.getLogin();
         String userEmail = user.getEmail();
 
-        Optional<User> foundUser = users.values().stream()
+        User foundUser = users.stream()
                 .filter(u -> (u.getLogin().equals(userLogin)
                         || u.getEmail().equals(userEmail))
-                        && u.getId() != userid)
-                .findFirst();
-        return foundUser.orElse(null);
-    }
+                        && !u.getId().equals(userid))
+                .findFirst()
+                .orElse(null);
 
+        return foundUser != null;
+    }
 }

@@ -1,8 +1,17 @@
 package by.yandex.practicum.filmorate.rest.dto;
 
+import by.yandex.practicum.filmorate.models.Friendship;
+import by.yandex.practicum.filmorate.models.Like;
+import by.yandex.practicum.filmorate.rest.serializers.FriendshipDtoSerializer;
+import by.yandex.practicum.filmorate.rest.serializers.UserDtoSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@JsonSerialize(using = UserDtoSerializer.class)
 public class UserDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
     private long id;
@@ -14,6 +23,8 @@ public class UserDto {
     private String name;
     @Past(message = "Birthday must be a past date.")
     private LocalDate birthday;
+    private List<Friendship> friendships;
+    private List<Like> likes;
 
     public UserDto() {
 
@@ -57,5 +68,21 @@ public class UserDto {
 
     public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
+    }
+
+    public List<Friendship> getFriendships() {
+        return new ArrayList<Friendship>(friendships);
+    }
+
+    public void setFriendships(List<Friendship> friendships) {
+        this.friendships = new ArrayList<>(friendships);
+    }
+
+    public void setLikes(List<Like> likes) {
+        this.likes = new ArrayList<>(likes);
+    }
+
+    public List<Like> getLikes() {
+        return likes;
     }
 }

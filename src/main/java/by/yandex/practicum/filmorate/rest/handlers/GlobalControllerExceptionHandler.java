@@ -1,9 +1,7 @@
 package by.yandex.practicum.filmorate.rest.handlers;
 
 
-import by.yandex.practicum.filmorate.exceptions.DtoConverterException;
-import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
-import by.yandex.practicum.filmorate.exceptions.UserServiceException;
+import by.yandex.practicum.filmorate.exceptions.*;
 import by.yandex.practicum.filmorate.models.ErrorInfo;
 import by.yandex.practicum.filmorate.rest.converters.ErrorInfoToErrorInfoDtoConverter;
 import by.yandex.practicum.filmorate.rest.dto.ErrorInfoDto;
@@ -14,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -33,6 +32,22 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         this.errorInfoDtoConverter = errorInfoDtoConverter;
     }
 
+    @ExceptionHandler(value = UserNotFoundException.class)
+    protected ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = FilmNotFoundException.class)
+    protected ResponseEntity<Object> handleFilmNotFoundException(FilmNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
     @ExceptionHandler(value = UserServiceException.class)
     protected ResponseEntity<Object> handleUserServiceException(UserServiceException ex, WebRequest request) {
         log.info(ex.getMessage());
@@ -49,8 +64,64 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
+    @ExceptionHandler(value = FilmStorageException.class)
+    protected ResponseEntity<Object> handleFilmStorageException(FilmStorageException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = FriendshipNotFoundException.class)
+    protected ResponseEntity<Object> handleFriendshipNotFoundException(FriendshipNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = FriendshipServiceException.class)
+    protected ResponseEntity<Object> handleFriendshipServiceException(FriendshipServiceException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = FriendshipStorageException.class)
+    protected ResponseEntity<Object> handleFriendshipStorageException(FriendshipStorageException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = LikeNotFoundException.class)
+    protected ResponseEntity<Object> handleLikeNotFoundException(LikeNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = LikeServiceException.class)
+    protected ResponseEntity<Object> handleLikeServiceException(LikeServiceException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
     @ExceptionHandler(value = DtoConverterException.class)
     protected ResponseEntity<Object> handleFilmServiceException(DtoConverterException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = UserStorageException.class)
+    protected ResponseEntity<Object> handleUserStorageException(UserStorageException ex, WebRequest request) {
         log.info(ex.getMessage());
         ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
         ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
@@ -62,7 +133,6 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
-
         List<String> errList = ex.getBindingResult()
                 .getAllErrors()
                 .stream()

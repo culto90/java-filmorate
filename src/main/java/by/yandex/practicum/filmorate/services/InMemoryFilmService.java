@@ -1,67 +1,88 @@
 package by.yandex.practicum.filmorate.services;
 
+import by.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
 import by.yandex.practicum.filmorate.models.Film;
+import by.yandex.practicum.filmorate.storages.FilmStorage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
 public class InMemoryFilmService implements FilmService {
-    private static final AtomicLong atomicLong = new AtomicLong(1);
-    private final Map<Long, Film> films;
+    private final static Integer POPULAR_FILM_LIMIT = 10;
+    private final FilmStorage filmStorage;
 
-    public InMemoryFilmService() {
-        films = new HashMap<>();
+    @Autowired
+    public InMemoryFilmService(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
     }
 
     @Override
     public List<Film> getAllFilms() {
-        return new ArrayList<>(films.values());
+        return filmStorage.getAll();
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        int limit = count;
+        if (limit == 0) {
+            limit = POPULAR_FILM_LIMIT;
+        }
+        return filmStorage.getAll()
+                .stream()
+                .sorted(Comparator.comparing(Film::getLikeCount).reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Film getFilmById(long id) {
-        return films.get(id);
+        Film film = filmStorage.getById(id);
+        if (film == null) {
+            throw new FilmNotFoundException("Film with id = '" + id + "' not found.");
+        }
+        return film;
     }
 
     @Override
-    public Film addFilm(Film film) throws FilmServiceException {
-        if (films.get(film.getId()) != null) {
+    public Film addFilm(Film newFilm) throws FilmServiceException {
+        if (newFilm == null) {
+            throw new FilmServiceException("Cannot add empty film.");
+        }
+
+        Long id = newFilm.getId();
+        if (filmStorage.getById(id) != null) {
             throw new FilmServiceException("Film with this id already exists.");
         }
 
-        long id = atomicLong.getAndIncrement();
-        Film newFilm = new Film(id, film.getName(),
-                film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getRate());
-        films.put(newFilm.getId(), newFilm);
-        log.info("Added new film: {}", film.toString());
-        return newFilm;
+        log.info("Film added: {}", newFilm);
+        return filmStorage.put(newFilm);
     }
 
     @Override
-    public Film updateFilm(Film film) throws FilmServiceException {
-        Film foundFilm = films.get(film.getId());
+    public Film updateFilm(Film updatedFilm) {
+        Long id = updatedFilm.getId();
+        Film foundFilm = filmStorage.getById(id);
 
         if (foundFilm == null) {
-            throw new FilmServiceException("Film with this id is not found.");
+            throw new FilmNotFoundException("Film with id = '" + id + "' not found.");
         }
-        log.info("Updated film: old value: {}", foundFilm.toString());
 
-        foundFilm.setReleaseDate(film.getReleaseDate());
-        foundFilm.setName(film.getName());
-        foundFilm.setDescription(film.getDescription());
-        foundFilm.setDuration(film.getDuration());
-        foundFilm.setRate(film.getRate());
+        log.info("Updated film: old value: {}", foundFilm);
+        foundFilm.setReleaseDate(updatedFilm.getReleaseDate());
+        foundFilm.setName(updatedFilm.getName());
+        foundFilm.setDescription(updatedFilm.getDescription());
+        foundFilm.setDuration(updatedFilm.getDuration());
+        foundFilm.setRate(updatedFilm.getRate());
+        log.info("Updated film: new value: {}", foundFilm);
 
-        log.info("Updated film: new value: {}", foundFilm.toString());
-
-        return foundFilm;
+        return filmStorage.put(foundFilm);
     }
 }

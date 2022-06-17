@@ -4,8 +4,12 @@ import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.rest.converters.FilmDtoToFilmConverter;
 import by.yandex.practicum.filmorate.rest.converters.FilmToFilmDtoConverter;
+import by.yandex.practicum.filmorate.rest.converters.LikeToLikeDtoConverter;
 import by.yandex.practicum.filmorate.rest.dto.FilmDto;
+import by.yandex.practicum.filmorate.rest.dto.LikeDto;
 import by.yandex.practicum.filmorate.services.FilmService;
+import by.yandex.practicum.filmorate.services.LikeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,44 +20,65 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 public class FilmController {
-    private FilmService filmService;
-    private FilmToFilmDtoConverter toFilmDtoConverter;
-    private FilmDtoToFilmConverter toFilmConverter;
+    private final FilmService filmService;
+    private final LikeService likeService;
+    private final FilmToFilmDtoConverter toFilmDtoConverter;
+    private final FilmDtoToFilmConverter toFilmConverter;
+    private final LikeToLikeDtoConverter toLikeDtoConverter;
 
-    public FilmController (FilmService filmService,
-                           FilmToFilmDtoConverter toFilmDtoConverter,
-                           FilmDtoToFilmConverter toFilmConverter) {
+    @Autowired
+    public FilmController(FilmService filmService,
+                          LikeService likeService,
+                          FilmToFilmDtoConverter toFilmDtoConverter,
+                          FilmDtoToFilmConverter toFilmConverter,
+                          LikeToLikeDtoConverter toLikeDtoConverter) {
         this.filmService = filmService;
+        this.likeService = likeService;
         this.toFilmDtoConverter = toFilmDtoConverter;
         this.toFilmConverter = toFilmConverter;
+        this.toLikeDtoConverter = toLikeDtoConverter;
     }
 
     @GetMapping("/films")
     public List<FilmDto> getAll() {
-        List<Film> films = filmService.getAllFilms();
-        List<FilmDto> filmsDto = films.stream()
+        return filmService.getAllFilms()
+                .stream()
                 .map(toFilmDtoConverter::convert)
                 .collect(Collectors.toList());
-        return filmsDto;
     }
 
     @GetMapping("/films/{id}")
     public FilmDto getOne(@PathVariable Long id) {
-        FilmDto filmDto = toFilmDtoConverter.convert(filmService.getFilmById(id));
-        return filmDto;
+        return toFilmDtoConverter.convert(filmService.getFilmById(id));
+    }
+
+    @GetMapping("/films/popular")
+    public List<FilmDto> getPopularFilms(@RequestParam(defaultValue = "10") String count ) {
+        return filmService.getPopularFilms(Integer.parseInt(count))
+                .stream()
+                .map(toFilmDtoConverter::convert)
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/films")
     public FilmDto addFilm(@Valid @RequestBody FilmDto newFilmDto) throws FilmServiceException {
         Film film = toFilmConverter.convert(newFilmDto);
-        FilmDto createdFilmDto = toFilmDtoConverter.convert(filmService.addFilm(film));
-        return createdFilmDto;
+        return toFilmDtoConverter.convert(filmService.addFilm(film));
     }
 
     @PutMapping("/films")
     public FilmDto updateFilm(@Valid @RequestBody FilmDto newFilmDto) throws FilmServiceException {
         Film film = toFilmConverter.convert(newFilmDto);
-        FilmDto updatedFilmDto = toFilmDtoConverter.convert(filmService.updateFilm(film));
-        return updatedFilmDto;
+        return toFilmDtoConverter.convert(filmService.updateFilm(film));
+    }
+
+    @PutMapping("/films/{id}/like/{userId}")
+    public LikeDto addLikeToFilm(@PathVariable long id, @PathVariable long userId) {
+        return toLikeDtoConverter.convert(likeService.addLike(id, userId));
+    }
+
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public void removeLikeFromFilm(@PathVariable long id, @PathVariable long userId) {
+        likeService.removeLike(id, userId);
     }
 }
