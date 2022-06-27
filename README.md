@@ -1,5 +1,5 @@
 # java-filmorate
-Template repository for Filmorate project.
+
 
 Database ER Diagram:
 ![](https://github.com/culto90/java-filmorate/blob/main/filmorate_er_diagram.PNG)
