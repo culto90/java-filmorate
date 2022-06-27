@@ -2,7 +2,7 @@
 Template repository for Filmorate project.
 
 Database ER Diagram:
-
+![](https://github.com/culto90/java-filmorate/src/main/resources/etc/filmorate_er_diagram.PNG)
 
 **USER**: stored data about user;
 **FRIENDSHIP**: intersect table between two users, M:M relationship. Stored data about friendships;
