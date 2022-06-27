@@ -2,7 +2,7 @@
 Template repository for Filmorate project.
 
 Database ER Diagram:
-![](E:\filmorate_er_diagram.PNG)
+![](https://github.com/culto90/java-filmorate/blob/main/filmorate_er_diagram.PNG)
 
 **USER**: stored data about user;
 
