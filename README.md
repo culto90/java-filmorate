@@ -4,7 +4,7 @@ Template repository for Filmorate project.
 Database ER Diagram:
 ![](E:\filmorate_er_diagram.PNG)
 
-**USER**: stored data about user;
+**USER**: stored data about user;\n
 **FRIENDSHIP**: intersect table between two users, M:M relationship. Stored data about friendships;
 **LIKE**: intersect table between users and films, M:M relationship. Stored data about likes;
 **FILM**: stored data about films;
