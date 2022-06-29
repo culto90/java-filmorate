@@ -12,7 +12,10 @@ Database ER Diagram:
 
 **FILM**: stored data about films;
 
-**MPA_RATING**: MPA Film Rating, dictionary, stored data about film ratings:
+**DICTIONARIES**: Stored all dictionaries in app;
+
+
+MPA Film Rating, dictionary, stored data about film ratings:
 
 
 | CODE | DESCTIPTION                                                              |
