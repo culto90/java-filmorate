@@ -5,11 +5,17 @@ Database ER Diagram:
 ![](https://github.com/culto90/java-filmorate/src/main/resources/etc/filmorate_er_diagram.PNG)
 
 **USER**: stored data about user;
-**FRIENDSHIP**: intersect table between two users, M:M relationship. Stored data about friendships;
-**LIKE**: intersect table between users and films, M:M relationship. Stored data about likes;
-**FILM**: stored data about films;
-**MPA_RATING**: MPA Film Rating, dictionary, stored data about film ratings:
 
+**FRIENDSHIP**: intersect table between two users, M:M relationship. Stored data about friendships;
+
+**LIKE**: intersect table between users and films, M:M relationship. Stored data about likes;
+
+**FILM**: stored data about films;
+
+**DICTIONARIES**: Stored all dictionaries in app;
+
+
+MPA Film Rating, dictionary, stored data about film ratings:
 | CODE | DESCTIPTION                                                              |
 |------|--------------------------------------------------------------------------|
 | G    | The film has no age restrictions.                                        |
