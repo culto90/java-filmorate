@@ -33,39 +33,39 @@ MPA Film Rating, dictionary, stored data about film ratings:
 **EXAMPLES:**
 1. Get all users:
 
-SELECT * FROM user;
+SELECT * FROM users;
 
 
 2. Get All Friends current user:
 
 SELECT * 
 
-FROM user AS U 
+FROM users AS U 
 
-  JOIN friendship AS f ON u.user_id = f.user_id
+  JOIN friendships AS f ON u.user_id = f.user_id
   
-  JOIN user AS fu ON f.friend_id = fu.user_id;
+  JOIN users AS fu ON f.friend_id = fu.user_id;
   
   
 3. Get all films:
 
 SELECT * 
 
-FROM film AS f
+FROM films AS f
 
   LEFT JOIN dictionaries AS d ON f.mpa_rating_code = d.code AND d.type = 'MPA_RATING'
   
-  LEFT JOIN film_genre AS fg ON f.film_id = fg.film_id
+  LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id
   
-  LEFT JOIN genre AS g ON fg.genre_id = g.genre_id;
+  LEFT JOIN genres AS g ON fg.genre_id = g.genre_id;
   
   
 4. Get all films and likes and users:
 
 SELECT *
 
-FROM film AS f
+FROM films AS f
 
-  LEFT JOIN like AS l ON f.film_id = l.film_id
+  LEFT JOIN likes AS l ON f.film_id = l.film_id
   
-  LEFT JOIN user AS u ON l.user_id = u.user_id;
+  LEFT JOIN users AS u ON l.user_id = u.user_id;
