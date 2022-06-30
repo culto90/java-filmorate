@@ -29,3 +29,23 @@ MPA Film Rating, dictionary, stored data about film ratings:
 **FILM_GENRE**: intersect table between films and genres, M:M relationship. Stored data about film genres;
 
 **GENRE**: Dictionary, stored data about film genres;
+
+**EXAMPLES:**
+1. Get all users:
+SELECT * FROM user;
+2. Get All Friends current user:
+SELECT * 
+FROM user AS U 
+  JOIN friendship AS f ON u.user_id = f.user_id
+  JOIN user AS fu ON f.friend_id = fu.user_id;
+3. Get all films:
+SELECT * 
+FROM film AS f
+  LEFT JOIN dictionaries AS d ON f.mpa_rating_code = d.code AND d.type = 'MPA_RATING'
+  LEFT JOIN film_genre AS fg ON f.film_id = fg.film_id
+  LEFT JOIN genre AS g ON fg.genre_id = g.genre_id;
+4. Get all films and likes and users:
+SELECT *
+FROM film AS f
+  LEFT JOIN like AS l ON f.film_id = l.film_id
+  LEFT JOIN user AS u ON l.user_id = u.user_id;
