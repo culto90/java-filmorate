@@ -12,10 +12,7 @@ Database ER Diagram:
 
 **FILMS**: stored data about films;
 
-**DICTIONARIES**: Stored all dictionaries in app;
-
-
-MPA Film Rating, dictionary, stored data about film ratings:
+**MPA_RATINGS**: MPA Film Rating, dictionary, stored data about film ratings:
 
 
 | CODE | DESCTIPTION                                                              |
@@ -53,7 +50,7 @@ SELECT *
 
 FROM films AS f
 
-  LEFT JOIN dictionaries AS d ON f.mpa_rating_code = d.code AND d.type = 'MPA_RATING'
+  LEFT JOIN mpa_ratings AS mpa ON f.mpa_rating_id = mpa.mpa_rating_id
   
   LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id
   
