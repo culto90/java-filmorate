@@ -66,3 +66,5 @@ FROM films AS f
   LEFT JOIN likes AS l ON f.film_id = l.film_id
   
   LEFT JOIN users AS u ON l.user_id = u.user_id;
+  
+  End.
