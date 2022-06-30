@@ -4,13 +4,13 @@ Template repository for Filmorate project.
 Database ER Diagram:
 ![](https://github.com/culto90/java-filmorate/blob/main/filmorate_er_diagram.PNG)
 
-**USER**: stored data about user;
+**USERS**: stored data about user;
 
-**FRIENDSHIP**: intersect table between two users, M:M relationship. Stored data about friendships;
+**FRIENDSHIPS**: intersect table between two users, M:M relationship. Stored data about friendships;
 
-**LIKE**: intersect table between users and films, M:M relationship. Stored data about likes;
+**LIKES**: intersect table between users and films, M:M relationship. Stored data about likes;
 
-**FILM**: stored data about films;
+**FILMS**: stored data about films;
 
 **DICTIONARIES**: Stored all dictionaries in app;
 
@@ -26,9 +26,9 @@ MPA Film Rating, dictionary, stored data about film ratings:
 |    R  | Those under 17 must be accompanied by an adult (at least 18 years old).  |
 |    NC-17  | Nobody under the age of 18 is admitted in any circumstance.              |          
 
-**FILM_GENRE**: intersect table between films and genres, M:M relationship. Stored data about film genres;
+**FILM_GENRES**: intersect table between films and genres, M:M relationship. Stored data about film genres;
 
-**GENRE**: Dictionary, stored data about film genres;
+**GENRES**: Dictionary, stored data about film genres;
 
 **EXAMPLES:**
 1. Get all users:
