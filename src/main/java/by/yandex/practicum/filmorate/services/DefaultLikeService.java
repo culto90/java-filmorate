@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class InMemoryLikeService implements LikeService {
+public class DefaultLikeService implements LikeService {
     private final LikeStorage likeStorage;
     private final UserService userService;
     private final FilmService filmService;
 
     @Autowired
-    public InMemoryLikeService(LikeStorage likeStorage, UserService userService, FilmService filmService) {
+    public DefaultLikeService(LikeStorage likeStorage, UserService userService, FilmService filmService) {
         this.likeStorage = likeStorage;
         this.userService = userService;
         this.filmService = filmService;

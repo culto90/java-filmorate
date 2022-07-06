@@ -12,11 +12,11 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class InMemoryUserService implements UserService {
+public class DefaultUserService implements UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public InMemoryUserService(UserStorage userStorage) {
+    public DefaultUserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -41,7 +41,7 @@ public class InMemoryUserService implements UserService {
         }
 
         Long id = newUser.getId();
-        if (id != null) {
+        if (id.equals(0L)) {
             if (userStorage.getById(id) != null) {
                 throw new UserServiceException("User with this id already exists.");
             }
@@ -51,8 +51,9 @@ public class InMemoryUserService implements UserService {
             throw new UserServiceException("User with same login/email already exists.");
         }
 
-        log.info("User added: {}", newUser);
-        return userStorage.put(newUser);
+        User addedUser = userStorage.put(newUser);
+        log.info("User added: {}", addedUser);
+        return addedUser;
     }
 
     @Override

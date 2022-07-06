@@ -2,7 +2,6 @@ package by.yandex.practicum.filmorate.rest.dto;
 
 import by.yandex.practicum.filmorate.models.Friendship;
 import by.yandex.practicum.filmorate.models.Like;
-import by.yandex.practicum.filmorate.rest.serializers.FriendshipDtoSerializer;
 import by.yandex.practicum.filmorate.rest.serializers.UserDtoSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -15,6 +14,7 @@ import java.util.List;
 public class UserDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
     private long id;
+    @NotBlank(message = "Email is not valid.")
     @Email(message = "Email is not valid.")
     private String email;
     @NotBlank(message = "Login must not be blank.")

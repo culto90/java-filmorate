@@ -1,7 +1,8 @@
-package by.yandex.practicum.filmorate.storages;
+package by.yandex.practicum.filmorate.storages.in_memory;
 
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.services.id_generators.IdGeneratorService;
+import by.yandex.practicum.filmorate.storages.FilmStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

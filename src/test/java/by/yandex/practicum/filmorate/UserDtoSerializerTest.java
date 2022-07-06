@@ -9,8 +9,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -22,7 +21,7 @@ public class UserDtoSerializerTest {
 
     @Test
     public void serialize() throws IOException {
-        String expected = "{\"id\":1,\"email\":\"email@example.com\",\"login\":\"loginName\",\"name\":\"userName\",\"birthday\":\"2022-06-16\",\"friendships\":[{\"id\":3,\"user\":{\"id\":2,\"email\":\"friend@example.com\",\"login\":\"friendLogin\",\"name\":\"friendName\",\"birthday\":\"2022-06-16\"}},{\"id\":5,\"user\":{\"id\":4,\"email\":\"friend2@example.com\",\"login\":\"friendLogin2\",\"name\":\"friendName2\",\"birthday\":\"2022-06-16\"}}]}";
+        String expected = "{\"id\":1,\"email\":\"email@example.com\",\"login\":\"loginName\",\"name\":\"userName\",\"birthday\":\"2022-07-06\",\"friendships\":[{\"id\":3,\"user\":{\"id\":2,\"email\":\"friend@example.com\",\"login\":\"friendLogin\",\"name\":\"friendName\",\"birthday\":\"2022-07-06\"}},{\"id\":5,\"user\":{\"id\":4,\"email\":\"friend2@example.com\",\"login\":\"friendLogin2\",\"name\":\"friendName2\",\"birthday\":\"2022-07-06\"}}],\"likes\":[]}";
 
         User user = new User();
         user.setId(1L);

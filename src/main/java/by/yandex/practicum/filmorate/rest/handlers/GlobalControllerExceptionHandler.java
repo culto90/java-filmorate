@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -30,6 +29,30 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     public GlobalControllerExceptionHandler(ErrorInfoToErrorInfoDtoConverter errorInfoDtoConverter) {
         this.errorInfoDtoConverter = errorInfoDtoConverter;
+    }
+
+    @ExceptionHandler(value = GenreNotFoundException.class)
+    protected ResponseEntity<Object> handleGenreNotFoundException(GenreNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = FilmorateRepositoryException.class)
+    protected ResponseEntity<Object> handleFilmorateRepositoryException(FilmorateRepositoryException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = MpaRatingNotFoundException.class)
+    protected ResponseEntity<Object> handleMpaRatingNotFoundException(MpaRatingNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(value = UserNotFoundException.class)
@@ -153,5 +176,4 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
             return "";
         }
     }
-
 }

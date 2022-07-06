@@ -2,8 +2,8 @@ package by.yandex.practicum.filmorate.models;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class User {
     private Long id;
@@ -11,22 +11,22 @@ public class User {
     private String login;
     private String name;
     private LocalDate birthday;
-    private List<Friendship> friendships;
-    private List<Like> likes;
+    private Map<Long, Friendship> friendships;
+    private Map<Long, Like> likes;
 
     public User() {
-        this.friendships = new ArrayList<>();
-        this.likes = new ArrayList<>();
+        this.friendships = new HashMap<>();
+        this.likes = new HashMap<>();
     }
 
-    public User (Long id, String email, String login, String name, LocalDate birthday) {
+    public User(Long id, String email, String login, String name, LocalDate birthday) {
         this.id = id;
         this.email = email;
         this.login = login;
         this.name = name;
         this.birthday = birthday;
-        this.friendships = new ArrayList<>();
-        this.likes = new ArrayList<>();
+        this.friendships = new HashMap<>();
+        this.likes = new HashMap<>();
     }
 
     public void setName(String name) {
@@ -57,8 +57,8 @@ public class User {
         return birthday;
     }
 
-    public List<Friendship>  getFriendships() {
-        return this.friendships;
+    public List<Friendship> getFriendships() {
+        return new ArrayList<>(this.friendships.values());
     }
 
     public void setId(Long id) {
@@ -78,45 +78,49 @@ public class User {
     }
 
     public void setFriendshipList(List<Friendship> friendships) {
-        this.friendships = new ArrayList<>(friendships);
+        this.friendships =  friendships
+                .stream()
+                .collect(Collectors.toMap(Friendship::getId, friendship -> friendship));
     }
 
     public void setLikeList(List<Like> likes) {
-        this.likes = new ArrayList<>(likes);
+        this.likes = likes.stream()
+                .collect(Collectors.toMap(Like::getId, like -> like));
     }
 
     public void addFriendship(Friendship friendship) {
-        this.friendships.add(friendship);
+        this.friendships.put(friendship.getId(), friendship);
     }
 
     public void addLike(Like like) {
-        this.likes.add(like);
+        this.likes.put(like.getId(), like);
     }
 
     public Friendship getFriendshipById(Long friendshipId) {
-        return friendships.stream()
+        return friendships.values().stream()
                 .filter(f -> f.getId().equals(friendshipId))
                 .findFirst()
                 .orElse(null);
     }
 
     public List<Like> getLikes() {
-        return likes;
+        return new ArrayList<>(likes.values());
     }
 
     public Like getLikeById(Long likeId) {
-        return likes.stream()
+        return likes.values()
+                .stream()
                 .filter(l -> l.getId().equals(likeId))
                 .findFirst()
                 .orElse(null);
     }
 
     public void removeFriendship(Friendship friendship) {
-        this.friendships.remove(friendship);
+        this.friendships.remove(friendship.getId(), friendship);
     }
 
     public void removeLike(Like like) {
-        this.likes.remove(like);
+        this.likes.remove(like.getId(), like);
     }
 
     @Override
@@ -128,5 +132,19 @@ public class User {
                 "name=" + this.getName() + ", " +
                 "birthday=" + this.getBirthday().format(DateTimeFormatter.ISO_LOCAL_DATE) +
                 ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && email.equals(user.email) && Objects.equals(login, user.login)
+                && Objects.equals(name, user.name) && Objects.equals(birthday, user.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, login, name, birthday);
     }
 }

@@ -12,15 +12,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 @Service
-public class InMemoryFilmService implements FilmService {
+public class DefaultFilmService implements FilmService {
     private final static Integer POPULAR_FILM_LIMIT = 10;
     private final FilmStorage filmStorage;
 
     @Autowired
-    public InMemoryFilmService(FilmStorage filmStorage) {
+    public DefaultFilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -62,8 +61,9 @@ public class InMemoryFilmService implements FilmService {
             throw new FilmServiceException("Film with this id already exists.");
         }
 
-        log.info("Film added: {}", newFilm);
-        return filmStorage.put(newFilm);
+        Film film = filmStorage.put(newFilm);
+        log.info("Film added: {}", film);
+        return film;
     }
 
     @Override
@@ -81,6 +81,9 @@ public class InMemoryFilmService implements FilmService {
         foundFilm.setDescription(updatedFilm.getDescription());
         foundFilm.setDuration(updatedFilm.getDuration());
         foundFilm.setRate(updatedFilm.getRate());
+        foundFilm.setRating(updatedFilm.getRating());
+        foundFilm.setGenreList(updatedFilm.getGenres());
+        foundFilm.setLikeList(updatedFilm.getLikes());
         log.info("Updated film: new value: {}", foundFilm);
 
         return filmStorage.put(foundFilm);

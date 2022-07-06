@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class InMemoryFriendshipService implements FriendshipService {
+public class DefaultFriendshipService implements FriendshipService {
     private final UserService userService;
     private final FriendshipStorage friendshipStorage;
 
     @Autowired
-    public InMemoryFriendshipService(UserService userService, FriendshipStorage friendshipStorage) {
+    public DefaultFriendshipService(UserService userService, FriendshipStorage friendshipStorage) {
         this.userService = userService;
         this.friendshipStorage = friendshipStorage;
     }
@@ -49,9 +49,7 @@ public class InMemoryFriendshipService implements FriendshipService {
         }
 
         Friendship friendshipForUser = friendshipStorage.put(new Friendship(user, friend));
-        Friendship friendshipForFriend = friendshipStorage.put(new Friendship(friend, user));
         user.addFriendship(friendshipForUser);
-        friend.addFriendship(friendshipForFriend);
         log.info("Added new friendship: {}", friendshipForUser);
         return friendshipForUser;
     }
@@ -70,7 +68,7 @@ public class InMemoryFriendshipService implements FriendshipService {
         }
 
         if (user.equals(friend)) {
-            throw new FriendshipServiceException("Cannot add yourself as friend.");
+            throw new FriendshipServiceException("Cannot remove yourself as friend.");
         }
 
         List<Friendship> friendships = findFriendships(userId, friendId);
@@ -84,11 +82,6 @@ public class InMemoryFriendshipService implements FriendshipService {
                 if (user.getFriendshipById(friendship.getId()) != null) {
                     user.removeFriendship(friendship);
                     userService.updateUser(user);
-                }
-
-                if (friend.getFriendshipById(friendship.getId()) != null) {
-                    friend.removeFriendship(friendship);
-                    userService.updateUser(friend);
                 }
                 log.info("Removed friendship: {}", friendship);
             }
@@ -129,9 +122,7 @@ public class InMemoryFriendshipService implements FriendshipService {
     private List<Friendship> findFriendships(Long userId, Long friendId) {
         List<Friendship> friendships = friendshipStorage.getAll();
         return friendships.stream()
-                .filter(f -> (f.getUser().getId().equals(userId) && f.getFriend().getId().equals(friendId))
-                    || (f.getUser().getId().equals(friendId) && f.getFriend().getId().equals(userId)))
+                .filter(f -> (f.getUser().getId().equals(userId) && f.getFriend().getId().equals(friendId)))
                 .collect(Collectors.toList());
     }
-
 }

@@ -1,8 +1,12 @@
 package by.yandex.practicum.filmorate.rest.dto;
 
+import by.yandex.practicum.filmorate.models.Genre;
 import by.yandex.practicum.filmorate.models.Like;
+import by.yandex.practicum.filmorate.models.dictionaries.Dictionary;
+import by.yandex.practicum.filmorate.rest.deserializers.FilmDtoDeserializer;
 import by.yandex.practicum.filmorate.rest.serializers.FilmDtoSerializer;
 import by.yandex.practicum.filmorate.rest.validators.constraints.ReleaseDateConstraint;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.validation.constraints.*;
@@ -10,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonDeserialize(using = FilmDtoDeserializer.class)
 @JsonSerialize(using = FilmDtoSerializer.class)
 public class FilmDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
@@ -25,6 +30,8 @@ public class FilmDto {
     private long duration;
     @Digits(integer = Integer.MAX_VALUE, fraction = 1)
     private double rate;
+    private Dictionary rating;
+    private List<Genre> genres;
     private List<Like> likes;
 
     public long getId() {
@@ -81,5 +88,21 @@ public class FilmDto {
 
     public List<Like> getLikes() {
         return likes;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public List<Genre> getGenres() {
+        return this.genres;
+    }
+
+    public Dictionary getRating() {
+        return rating;
+    }
+
+    public void setRating(Dictionary rating) {
+        this.rating = rating;
     }
 }
