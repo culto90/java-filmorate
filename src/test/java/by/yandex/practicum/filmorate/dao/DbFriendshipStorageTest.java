@@ -68,8 +68,19 @@ public class DbFriendshipStorageTest {
 
     @Test
     public void testPutInsert() {
-        User user = userStorage.getById(1L);
-        User friend = userStorage.getById(2L);
+        User user = new User();
+        user.setEmail("user@email.by");
+        user.setLogin("user_login");
+        user.setName("user_name");
+        user.setBirthday(LocalDate.now());
+
+        User friend = new User();
+        friend.setEmail("friend@email.by");
+        friend.setLogin("friend_login");
+        friend.setName("friend_name");
+        friend.setBirthday(LocalDate.now());
+        userStorage.put(user);
+        userStorage.put(friend);
         Friendship friendship = new Friendship(user, friend);
         Friendship insertedFriendship = friendshipStorage.put(friendship);
         assertEquals(2L, insertedFriendship.getId());

@@ -1,9 +1,11 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
+import by.yandex.practicum.filmorate.exceptions.MpaRatingNotFoundException;
 import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
 import by.yandex.practicum.filmorate.storages.MpaRatingStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -41,10 +43,13 @@ public class DbMpaRatingStorage implements MpaRatingStorage {
         if (id == null) {
             return null;
         }
-        if (id.compareTo(0L) <= 0) {
-            return null;
+        MpaRating rating;
+        try {
+            rating = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_RATING, this::mapRowToMPARating, id);
+        } catch (EmptyResultDataAccessException e) {
+            rating = null;
         }
-        return jdbcTemplate.queryForObject(SELECT_CORRESPONDING_RATING, this::mapRowToMPARating, id);
+        return rating;
     }
 
     @Override

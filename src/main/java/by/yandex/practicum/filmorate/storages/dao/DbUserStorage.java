@@ -1,11 +1,13 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
+import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import by.yandex.practicum.filmorate.models.*;
 import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
 import by.yandex.practicum.filmorate.storages.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -70,10 +72,12 @@ public class DbUserStorage implements UserStorage {
         if (id == null) {
             return null;
         }
-        if (id.compareTo(0L) <= 0) {
-            return null;
+        User user;
+        try {
+            user = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_USER, this::mapRowToUser, id);
+        } catch (EmptyResultDataAccessException e) {
+            user = null;
         }
-        User user = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_USER, this::mapRowToUser, id);
         if (user != null) {
             List<Friendship> friendships = jdbcTemplate.query(SELECT_ALL_FRIENDSHIP_CORRESPONDING_USER,
                     this::mapFriendRowToUser,
@@ -213,7 +217,7 @@ public class DbUserStorage implements UserStorage {
         Long likeId = resultSet.getLong("like_id");
         Long userId = resultSet.getLong("user_id");
         Long filmId = resultSet.getLong("film_id");
-        User user = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_USER,  this::mapRowToUser, userId);
+        User user = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_USER, this::mapRowToUser, userId);
         Film film = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_FILM, this::mapRowToFilm, filmId);
         return new Like(likeId, film, user);
     }

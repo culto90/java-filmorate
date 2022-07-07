@@ -4,12 +4,15 @@ import by.yandex.practicum.filmorate.models.Friendship;
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.rest.serializers.UserDtoSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @JsonSerialize(using = UserDtoSerializer.class)
 public class UserDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
@@ -25,64 +28,4 @@ public class UserDto {
     private LocalDate birthday;
     private List<Friendship> friendships;
     private List<Like> likes;
-
-    public UserDto() {
-
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
-
-    public List<Friendship> getFriendships() {
-        return new ArrayList<Friendship>(friendships);
-    }
-
-    public void setFriendships(List<Friendship> friendships) {
-        this.friendships = new ArrayList<>(friendships);
-    }
-
-    public void setLikes(List<Like> likes) {
-        this.likes = new ArrayList<>(likes);
-    }
-
-    public List<Like> getLikes() {
-        return likes;
-    }
 }

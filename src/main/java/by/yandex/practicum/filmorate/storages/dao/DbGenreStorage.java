@@ -1,9 +1,11 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
+import by.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import by.yandex.practicum.filmorate.models.Genre;
 import by.yandex.practicum.filmorate.storages.GenreStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -41,10 +43,13 @@ public class DbGenreStorage implements GenreStorage {
         if (id == null) {
             return null;
         }
-        if (id.compareTo(0L) <= 0) {
-            return null;
+        Genre genre;
+        try {
+            genre = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_GENRE, this::mapRowToGenre, id);
+        } catch (EmptyResultDataAccessException e) {
+            genre = null;
         }
-        return jdbcTemplate.queryForObject(SELECT_CORRESPONDING_GENRE, this::mapRowToGenre, id);
+        return genre;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
+import by.yandex.practicum.filmorate.exceptions.LikeNotFoundException;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.models.User;
@@ -7,6 +8,7 @@ import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
 import by.yandex.practicum.filmorate.storages.LikeStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -51,10 +53,13 @@ public class DbLikeStorage implements LikeStorage {
         if (id == null) {
             return null;
         }
-        if (id.compareTo(0L) <= 0) {
-            return null;
+        Like like;
+        try {
+            like = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_LIKE, this::mapRowToLike, id);
+        } catch (EmptyResultDataAccessException e) {
+            like = null;
         }
-        return jdbcTemplate.queryForObject(SELECT_CORRESPONDING_LIKE, this::mapRowToLike, id);
+        return like;
     }
 
     @Override

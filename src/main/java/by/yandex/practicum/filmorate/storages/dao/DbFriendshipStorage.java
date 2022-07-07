@@ -1,10 +1,12 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
+import by.yandex.practicum.filmorate.exceptions.FriendshipNotFoundException;
 import by.yandex.practicum.filmorate.models.Friendship;
 import by.yandex.practicum.filmorate.models.FriendshipStatus;
 import by.yandex.practicum.filmorate.models.User;
 import by.yandex.practicum.filmorate.storages.FriendshipStorage;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -44,10 +46,13 @@ public class DbFriendshipStorage implements FriendshipStorage {
         if (id == null) {
             return null;
         }
-        if (id.compareTo(0L) <= 0) {
-            return null;
+        Friendship friendship;
+        try {
+            friendship = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_FRIENDSHIP, this::mapRowToFriendship, id);
+        } catch (EmptyResultDataAccessException e) {
+            friendship = null;
         }
-        return jdbcTemplate.queryForObject(SELECT_CORRESPONDING_FRIENDSHIP, this::mapRowToFriendship, id);
+        return friendship;
     }
 
     @Override

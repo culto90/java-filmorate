@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class MpaRatingCachedDictionary implements CachedDictionary<MpaRating>{
+public class MpaRatingCachedDictionary implements CachedDictionary<MpaRating> {
     private Map<Long, Dictionary> dictionaries;
     private final MpaRatingStorage storage;
 
@@ -21,7 +21,7 @@ public class MpaRatingCachedDictionary implements CachedDictionary<MpaRating>{
     private void init() {
         dictionaries = storage.getAll()
                 .stream()
-                .collect(Collectors.toMap(MpaRating::getId, d->d));
+                .collect(Collectors.toMap(MpaRating::getId, rating -> rating));
     }
 
     @Override

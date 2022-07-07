@@ -1,5 +1,6 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
+import by.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.FilmorateRepositoryException;
 import by.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import by.yandex.practicum.filmorate.models.*;
@@ -10,6 +11,7 @@ import by.yandex.practicum.filmorate.storages.dao.cache.GenreCachedDictionary;
 import by.yandex.practicum.filmorate.storages.dao.cache.MpaRatingCachedDictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -77,10 +79,12 @@ public class DbFilmStorage implements FilmStorage {
         if (id == null) {
             return null;
         }
-        if (id.compareTo(0L) <= 0) {
-            return null;
+        Film film;
+        try {
+            film = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_FILM, this::mapRowToFilm, id);
+        } catch (EmptyResultDataAccessException e) {
+            film = null;
         }
-        Film film = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_FILM, this::mapRowToFilm, id);
         if (film != null) {
             List<Like> likes = jdbcTemplate.query(SELECT_ALL_LIKES_CORRESPONDING_FILM,
                     this::mapLikeRowToFilm,
@@ -139,7 +143,7 @@ public class DbFilmStorage implements FilmStorage {
                 film.getDuration(),
                 film.getRate(),
                 ratingId
-                );
+        );
         jdbcTemplate.update(DELETE_ALL_GENRES_CORRESPONDING_FILM, film.getId());
         if (!genres.isEmpty()) {
             insertGenres(genres, film.getId());
@@ -221,7 +225,7 @@ public class DbFilmStorage implements FilmStorage {
         Long likeId = resultSet.getLong("like_id");
         Long userId = resultSet.getLong("user_id");
         Long filmId = resultSet.getLong("film_id");
-        User user = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_USER,  this::mapRowToUser, userId);
+        User user = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_USER, this::mapRowToUser, userId);
         Film film = jdbcTemplate.queryForObject(SELECT_CORRESPONDING_FILM, this::mapRowToFilm, filmId);
         return new Like(likeId, film, user);
     }
