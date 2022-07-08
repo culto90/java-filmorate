@@ -24,6 +24,7 @@ public class FriendshipDtoSerializer extends StdSerializer<FriendshipDto> {
 
         jgen.writeStartObject();
         jgen.writeNumberField("id", friendshipDto.getId());
+        jgen.writeStringField("status", String.valueOf(friendshipDto.getStatus()));
         jgen.writeFieldName("user");
         jgen.writeStartObject();
         jgen.writeNumberField("id", friendshipDto.getUser().getId());

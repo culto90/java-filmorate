@@ -17,6 +17,7 @@ public class FriendshipToFriendshipDtoConverter implements Converter<Friendship,
         }
         FriendshipDto friendshipDto = new FriendshipDto();
         friendshipDto.setId(friendship.getId());
+        friendshipDto.setStatus(friendship.getStatus());
         friendshipDto.setUser(friendship.getUser());
         friendshipDto.setFriend(friendship.getFriend());
         return friendshipDto;

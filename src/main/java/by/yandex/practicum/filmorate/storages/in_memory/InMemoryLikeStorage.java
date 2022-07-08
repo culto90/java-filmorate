@@ -1,7 +1,8 @@
-package by.yandex.practicum.filmorate.storages;
+package by.yandex.practicum.filmorate.storages.in_memory;
 
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.services.id_generators.IdGeneratorService;
+import by.yandex.practicum.filmorate.storages.LikeStorage;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

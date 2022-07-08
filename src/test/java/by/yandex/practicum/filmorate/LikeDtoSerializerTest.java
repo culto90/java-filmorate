@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -23,7 +23,7 @@ public class LikeDtoSerializerTest {
 
     @Test
     public void serialize() throws IOException {
-        String expected = "{\"id\":3,\"film\":{\"id\":2,\"name\":\"name\",\"description\":\"desc\",\"releaseDate\":\"2000-01-01\",\"duration\":100,\"rate\":4.0},\"user\":{\"id\":1,\"email\":\"email@example.com\",\"login\":\"loginName\",\"name\":\"userName\",\"birthday\":\"2022-06-16\"}}";
+        String expected = "{\"id\":3,\"film\":{\"id\":2,\"name\":\"name\",\"description\":\"desc\",\"releaseDate\":\"2000-01-01\",\"duration\":100,\"rate\":4.0},\"user\":{\"id\":1,\"email\":\"email@example.com\",\"login\":\"loginName\",\"name\":\"userName\",\"birthday\":\"2022-07-06\"}}";
 
         User user = new User();
         user.setId(1L);

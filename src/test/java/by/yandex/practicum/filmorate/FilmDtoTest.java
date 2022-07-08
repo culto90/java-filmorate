@@ -1,9 +1,8 @@
 package by.yandex.practicum.filmorate;
 
 import by.yandex.practicum.filmorate.rest.dto.FilmDto;
-import by.yandex.practicum.filmorate.rest.dto.UserDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmDtoTest {
     private Validator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();

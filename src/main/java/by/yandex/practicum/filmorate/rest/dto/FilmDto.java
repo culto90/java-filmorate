@@ -1,15 +1,23 @@
 package by.yandex.practicum.filmorate.rest.dto;
 
+import by.yandex.practicum.filmorate.models.Genre;
 import by.yandex.practicum.filmorate.models.Like;
+import by.yandex.practicum.filmorate.models.dictionaries.Dictionary;
+import by.yandex.practicum.filmorate.rest.deserializers.FilmDtoDeserializer;
 import by.yandex.practicum.filmorate.rest.serializers.FilmDtoSerializer;
 import by.yandex.practicum.filmorate.rest.validators.constraints.ReleaseDateConstraint;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@JsonDeserialize(using = FilmDtoDeserializer.class)
 @JsonSerialize(using = FilmDtoSerializer.class)
 public class FilmDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
@@ -25,61 +33,7 @@ public class FilmDto {
     private long duration;
     @Digits(integer = Integer.MAX_VALUE, fraction = 1)
     private double rate;
+    private Dictionary rating;
+    private List<Genre> genres;
     private List<Like> likes;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(long duration) {
-        this.duration = duration;
-    }
-
-    public double getRate() {
-        return rate;
-    }
-
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
-
-    public void setLikes(List<Like> likes) {
-        this.likes = new ArrayList<>(likes);
-    }
-
-    public List<Like> getLikes() {
-        return likes;
-    }
 }

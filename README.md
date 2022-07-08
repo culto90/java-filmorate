@@ -35,36 +35,36 @@ SELECT * FROM users;
 
 2. Get All Friends current user:
 
-SELECT * 
+SELECT *
 
-FROM users AS U 
+FROM users AS U
 
-  JOIN friendships AS f ON u.user_id = f.user_id
-  
-  JOIN users AS fu ON f.friend_id = fu.user_id;
-  
-  
+JOIN friendships AS f ON u.user_id = f.user_id
+
+JOIN users AS fu ON f.friend_id = fu.user_id;
+
+
 3. Get all films:
 
-SELECT * 
+SELECT *
 
 FROM films AS f
 
-  LEFT JOIN mpa_ratings AS mpa ON f.mpa_rating_id = mpa.mpa_rating_id
-  
-  LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id
-  
-  LEFT JOIN genres AS g ON fg.genre_id = g.genre_id;
-  
-  
+LEFT JOIN mpa_ratings AS mpa ON f.mpa_rating_id = mpa.mpa_rating_id
+
+LEFT JOIN film_genres AS fg ON f.film_id = fg.film_id
+
+LEFT JOIN genres AS g ON fg.genre_id = g.genre_id;
+
+
 4. Get all films and likes and users:
 
 SELECT *
 
 FROM films AS f
 
-  LEFT JOIN likes AS l ON f.film_id = l.film_id
-  
-  LEFT JOIN users AS u ON l.user_id = u.user_id;
-  
-  End.
+LEFT JOIN likes AS l ON f.film_id = l.film_id
+
+LEFT JOIN users AS u ON l.user_id = u.user_id;
+
+End.
