@@ -1,7 +1,5 @@
 package by.yandex.practicum.filmorate.models;
 
-import by.yandex.practicum.filmorate.models.dictionaries.Dictionary;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ public class Film {
     private LocalDate releaseDate;
     private long duration;
     private double rate;
-    private Dictionary rating;
+    private MpaRating rating;
     private List<Genre> genres;
     private List<Like> likes;
 
@@ -91,11 +89,11 @@ public class Film {
         this.rate = rate;
     }
 
-    public Dictionary getRating() {
+    public MpaRating getRating() {
         return this.rating;
     }
 
-    public void setRating(Dictionary rating) {
+    public void setRating(MpaRating rating) {
         this.rating = rating;
     }
 

@@ -23,7 +23,7 @@ public class FilmToFilmDtoConverter implements Converter<Film, FilmDto> {
         filmDto.setReleaseDate(film.getReleaseDate());
         filmDto.setDuration(film.getDuration());
         filmDto.setRate(film.getRate());
-        filmDto.setRating(film.getRating());
+        filmDto.setMpa(film.getRating());
         filmDto.setGenres(film.getGenres());
         filmDto.setLikes(film.getLikes());
         return filmDto;

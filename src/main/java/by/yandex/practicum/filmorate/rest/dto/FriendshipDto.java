@@ -2,14 +2,15 @@ package by.yandex.practicum.filmorate.rest.dto;
 
 import by.yandex.practicum.filmorate.models.FriendshipStatus;
 import by.yandex.practicum.filmorate.models.User;
-import by.yandex.practicum.filmorate.rest.serializers.FriendshipDtoSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@JsonSerialize(using = FriendshipDtoSerializer.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class FriendshipDto {
     private Long id;
     private FriendshipStatus status;

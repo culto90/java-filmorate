@@ -2,14 +2,15 @@ package by.yandex.practicum.filmorate.rest.dto;
 
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.models.User;
-import by.yandex.practicum.filmorate.rest.serializers.LikeDtoSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@JsonSerialize(using = LikeDtoSerializer.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class LikeDto {
     private Long id;
     private Film film;

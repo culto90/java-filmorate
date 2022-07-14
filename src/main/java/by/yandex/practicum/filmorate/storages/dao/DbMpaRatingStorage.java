@@ -1,7 +1,6 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
-import by.yandex.practicum.filmorate.exceptions.MpaRatingNotFoundException;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.MpaRatingStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -85,7 +84,7 @@ public class DbMpaRatingStorage implements MpaRatingStorage {
 
     private MpaRating updateRating(MpaRating rating) {
         jdbcTemplate.update(UPDATE_CORRESPONDING_RATING,
-                rating.getCode(),
+                rating.getName(),
                 rating.getDescription(),
                 rating.getId());
         return getById(rating.getId());
@@ -93,7 +92,7 @@ public class DbMpaRatingStorage implements MpaRatingStorage {
 
     private Map<String, Object> ratingToMap(MpaRating rating) {
         Map<String, Object> values = new HashMap<>();
-        values.put("code", rating.getCode());
+        values.put("code", rating.getName());
         values.put("description", rating.getDescription());
         return values;
     }

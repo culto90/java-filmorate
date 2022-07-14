@@ -2,10 +2,12 @@ package by.yandex.practicum.filmorate.services;
 
 import by.yandex.practicum.filmorate.exceptions.FriendshipNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.FriendshipServiceException;
+import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.UserServiceException;
 import by.yandex.practicum.filmorate.models.Friendship;
 import by.yandex.practicum.filmorate.models.User;
 import by.yandex.practicum.filmorate.storages.FriendshipStorage;
+import by.yandex.practicum.filmorate.storages.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,26 +18,26 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class DefaultFriendshipService implements FriendshipService {
-    private final UserService userService;
     private final FriendshipStorage friendshipStorage;
+    private final UserStorage userStorage;
 
     @Autowired
-    public DefaultFriendshipService(UserService userService, FriendshipStorage friendshipStorage) {
-        this.userService = userService;
+    public DefaultFriendshipService(FriendshipStorage friendshipStorage, UserStorage userStorage) {
         this.friendshipStorage = friendshipStorage;
+        this.userStorage = userStorage;
     }
 
     @Override
     public Friendship addToFriend(Long userId, Long friendId) {
-        User user = userService.getUserById(userId);
-        User friend = userService.getUserById(friendId);
+        User user = userStorage.getById(userId);
+        User friend = userStorage.getById(friendId);
 
         if (user == null) {
-            throw new FriendshipServiceException("User cannot be null.");
+            throw new UserNotFoundException("User with id = '" + userId + "' not found.");
         }
 
         if (friend == null) {
-            throw new FriendshipServiceException("Friend cannot be null.");
+            throw new UserNotFoundException("Friend with id = '" + userId + "' not found.");
         }
 
         if (user.equals(friend)) {
@@ -56,15 +58,15 @@ public class DefaultFriendshipService implements FriendshipService {
 
     @Override
     public void removeFriend(Long userId, Long friendId) {
-        User user = userService.getUserById(userId);
-        User friend = userService.getUserById(friendId);
+        User user = userStorage.getById(userId);
+        User friend = userStorage.getById(friendId);
 
         if (user == null) {
-            throw new FriendshipServiceException("User cannot be null.");
+            throw new UserNotFoundException("User with id = '" + userId + "' not found.");
         }
 
         if (friend == null) {
-            throw new FriendshipServiceException("Friend cannot be null.");
+            throw new UserNotFoundException("Friend with id = '" + userId + "' not found.");
         }
 
         if (user.equals(friend)) {
@@ -81,7 +83,7 @@ public class DefaultFriendshipService implements FriendshipService {
             for (Friendship friendship: friendships) {
                 if (user.getFriendshipById(friendship.getId()) != null) {
                     user.removeFriendship(friendship);
-                    userService.updateUser(user);
+                    userStorage.put(user);
                 }
                 log.info("Removed friendship: {}", friendship);
             }
@@ -102,8 +104,8 @@ public class DefaultFriendshipService implements FriendshipService {
 
     @Override
     public List<User> getSharedFriends(Long userId, Long otherId) {
-        User user = userService.getUserById(userId);
-        User other = userService.getUserById(otherId);
+        User user = userStorage.getById(userId);
+        User other = userStorage.getById(otherId);
 
         List<User> userFriends = user.getFriendships()
                 .stream()

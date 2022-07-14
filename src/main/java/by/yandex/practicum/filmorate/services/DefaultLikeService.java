@@ -1,11 +1,15 @@
 package by.yandex.practicum.filmorate.services;
 
+import by.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.LikeNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.LikeServiceException;
+import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.models.User;
+import by.yandex.practicum.filmorate.storages.FilmStorage;
 import by.yandex.practicum.filmorate.storages.LikeStorage;
+import by.yandex.practicum.filmorate.storages.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,27 +18,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultLikeService implements LikeService {
     private final LikeStorage likeStorage;
-    private final UserService userService;
-    private final FilmService filmService;
+    private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
     @Autowired
-    public DefaultLikeService(LikeStorage likeStorage, UserService userService, FilmService filmService) {
+    public DefaultLikeService(LikeStorage likeStorage, UserStorage userStorage, FilmStorage filmStorage) {
         this.likeStorage = likeStorage;
-        this.userService = userService;
-        this.filmService = filmService;
+        this.userStorage = userStorage;
+        this.filmStorage = filmStorage;
     }
 
     @Override
     public Like addLike(Long filmId, Long userId) {
-        Film film = filmService.getFilmById(filmId);
-        User user = userService.getUserById(userId);
+        Film film = filmStorage.getById(filmId);
+        User user = userStorage.getById(userId);
 
         if (film == null) {
-            throw new LikeServiceException("Film cannot be null.");
+            throw new FilmNotFoundException("Film with id = '" + filmId + "' not found.");
         }
 
         if (user == null) {
-            throw new LikeServiceException("User cannot be null.");
+            throw new UserNotFoundException("User with id = '" + userId + "' not found.");
         }
 
         Like like = findLike(filmId, userId);
@@ -46,23 +50,23 @@ public class DefaultLikeService implements LikeService {
         like = likeStorage.put(new Like(film, user));
         film.addLike(like);
         user.addLike(like);
-        filmService.updateFilm(film);
-        userService.updateUser(user);
+        filmStorage.put(film);
+        userStorage.put(user);
         log.info("Added new like: {}", like);
         return like;
     }
 
     @Override
     public void removeLike(Long filmId, Long userId) {
-        Film film = filmService.getFilmById(filmId);
-        User user = userService.getUserById(userId);
+        Film film = filmStorage.getById(filmId);
+        User user = userStorage.getById(userId);
 
         if (film == null) {
-            throw new LikeServiceException("Film cannot be null.");
+            throw new FilmNotFoundException("Film with id = '" + filmId + "' not found.");
         }
 
         if (user == null) {
-            throw new LikeServiceException("User cannot be null.");
+            throw new UserNotFoundException("User with id = '" + userId + "' not found.");
         }
 
         Like like = findLike(filmId, userId);

@@ -1,7 +1,7 @@
 package by.yandex.practicum.filmorate.rest.converters;
 
 import by.yandex.practicum.filmorate.exceptions.DtoConverterException;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.rest.dto.MpaRatingDto;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class MpaRatingToMpaRatingDtoConverter implements Converter<MpaRating, Mp
         }
         MpaRatingDto ratingDto = new MpaRatingDto();
         ratingDto.setId(rating.getId());
-        ratingDto.setName(rating.getCode());
+        ratingDto.setName(rating.getName());
         ratingDto.setDescription(rating.getDescription());
         return ratingDto;
     }

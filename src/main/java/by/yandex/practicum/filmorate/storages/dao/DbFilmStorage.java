@@ -1,11 +1,9 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
-import by.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.FilmorateRepositoryException;
 import by.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import by.yandex.practicum.filmorate.models.*;
-import by.yandex.practicum.filmorate.models.dictionaries.Dictionary;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.FilmStorage;
 import by.yandex.practicum.filmorate.storages.dao.cache.GenreCachedDictionary;
 import by.yandex.practicum.filmorate.storages.dao.cache.MpaRatingCachedDictionary;
@@ -130,7 +128,7 @@ public class DbFilmStorage implements FilmStorage {
     }
 
     private Film updateFilm(Film film) {
-        Dictionary rating = film.getRating();
+        MpaRating rating = film.getRating();
         List<Genre> genres = film.getGenres();
         Long ratingId = null;
         if (rating != null) {
@@ -169,7 +167,7 @@ public class DbFilmStorage implements FilmStorage {
         values.put("release_date", film.getReleaseDate());
         values.put("duration", film.getDuration());
         values.put("rate", film.getRate());
-        Dictionary rating = film.getRating();
+        MpaRating rating = film.getRating();
         if (rating != null) {
             values.put("mpa_rating_id", rating.getId());
         }

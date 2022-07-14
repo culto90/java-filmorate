@@ -1,6 +1,5 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
-import by.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
 import by.yandex.practicum.filmorate.models.Genre;
 import by.yandex.practicum.filmorate.storages.GenreStorage;
 import org.springframework.beans.factory.annotation.Autowired;
