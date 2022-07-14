@@ -2,13 +2,11 @@ package by.yandex.practicum.filmorate.rest.dto;
 
 import by.yandex.practicum.filmorate.models.Genre;
 import by.yandex.practicum.filmorate.models.Like;
-import by.yandex.practicum.filmorate.models.dictionaries.Dictionary;
-import by.yandex.practicum.filmorate.rest.deserializers.FilmDtoDeserializer;
-import by.yandex.practicum.filmorate.rest.serializers.FilmDtoSerializer;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.rest.validators.constraints.ReleaseDateConstraint;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
@@ -17,8 +15,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonDeserialize(using = FilmDtoDeserializer.class)
-@JsonSerialize(using = FilmDtoSerializer.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class FilmDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
     private long id;
@@ -33,7 +31,8 @@ public class FilmDto {
     private long duration;
     @Digits(integer = Integer.MAX_VALUE, fraction = 1)
     private double rate;
-    private Dictionary rating;
+    @NotNull(message = "MPA Rating cannot be null.")
+    private MpaRating mpa;
     private List<Genre> genres;
     private List<Like> likes;
 }

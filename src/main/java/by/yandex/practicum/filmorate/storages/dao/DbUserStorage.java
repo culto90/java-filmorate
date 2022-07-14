@@ -1,8 +1,7 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
-import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import by.yandex.practicum.filmorate.models.*;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

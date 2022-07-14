@@ -1,7 +1,6 @@
 package by.yandex.practicum.filmorate.dao;
 
 import by.yandex.practicum.filmorate.models.Genre;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
 import by.yandex.practicum.filmorate.storages.GenreStorage;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;

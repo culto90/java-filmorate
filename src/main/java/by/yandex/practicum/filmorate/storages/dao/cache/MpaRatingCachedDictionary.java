@@ -1,7 +1,6 @@
 package by.yandex.practicum.filmorate.storages.dao.cache;
 
-import by.yandex.practicum.filmorate.models.dictionaries.Dictionary;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.MpaRatingStorage;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class MpaRatingCachedDictionary implements CachedDictionary<MpaRating> {
-    private Map<Long, Dictionary> dictionaries;
+    private Map<Long, MpaRating> dictionaries;
     private final MpaRatingStorage storage;
 
     public MpaRatingCachedDictionary(MpaRatingStorage storage) {

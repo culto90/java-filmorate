@@ -1,6 +1,5 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
-import by.yandex.practicum.filmorate.exceptions.FriendshipNotFoundException;
 import by.yandex.practicum.filmorate.models.Friendship;
 import by.yandex.practicum.filmorate.models.FriendshipStatus;
 import by.yandex.practicum.filmorate.models.User;

@@ -1,10 +1,9 @@
 package by.yandex.practicum.filmorate.storages.dao;
 
-import by.yandex.practicum.filmorate.exceptions.LikeNotFoundException;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.models.User;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.LikeStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;

@@ -1,6 +1,6 @@
 package by.yandex.practicum.filmorate.services;
 
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package by.yandex.practicum.filmorate.dao;
 
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.dao.DbMpaRatingStorage;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -32,31 +32,31 @@ public class DbMpaRatingStorageTest {
     @Test
     public void testPutInsert() {
         MpaRating rating = new MpaRating();
-        rating.setCode("NR");
+        rating.setName("NR");
         rating.setDescription("Not Rated");
         MpaRating inserted = ratingStorage.put(rating);
-        assertEquals(rating.getCode(), inserted.getCode());
+        assertEquals(rating.getName(), inserted.getName());
         assertEquals(rating.getDescription(), inserted.getDescription());
     }
 
     @Test
     public void testPutUpdate() {
         MpaRating rating = new MpaRating();
-        rating.setCode("NR");
+        rating.setName("NR");
         rating.setDescription("Not Rated");
         MpaRating inserted = ratingStorage.put(rating);
-        inserted.setCode("UR");
+        inserted.setName("UR");
         inserted.setDescription("Unrated");
         MpaRating updated = ratingStorage.put(inserted);
         assertEquals(inserted.getId(), updated.getId());
-        assertEquals(inserted.getCode(), updated.getCode());
+        assertEquals(inserted.getName(), updated.getName());
         assertEquals(inserted.getDescription(), updated.getDescription());
     }
 
     @Test
     public void testRemove() {
         MpaRating rating = new MpaRating();
-        rating.setCode("NR");
+        rating.setName("NR");
         rating.setDescription("Not Rated");
         ratingStorage.put(rating);
         int numberOfRatingBefore = ratingStorage.getAll().size();
@@ -68,7 +68,7 @@ public class DbMpaRatingStorageTest {
     @Test
     public void testRemoveAll() {
         MpaRating rating = new MpaRating();
-        rating.setCode("NR");
+        rating.setName("NR");
         rating.setDescription("Not Rated");
         ratingStorage.put(rating);
         int numberOfRatings = ratingStorage.getAll().size();

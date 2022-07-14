@@ -1,18 +1,12 @@
 package by.yandex.practicum.filmorate.rest.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Data
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ErrorInfoDto {
-    private final String url;
-    private final String exception;
-
-    public ErrorInfoDto(String url, String exception) {
-        this.url = url;
-        this.exception = exception;
-    }
+    private String url;
+    private String exception;
 }

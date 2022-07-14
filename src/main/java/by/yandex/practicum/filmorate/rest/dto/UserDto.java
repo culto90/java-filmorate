@@ -2,9 +2,9 @@ package by.yandex.practicum.filmorate.rest.dto;
 
 import by.yandex.practicum.filmorate.models.Friendship;
 import by.yandex.practicum.filmorate.models.Like;
-import by.yandex.practicum.filmorate.rest.serializers.UserDtoSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
@@ -13,7 +13,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@JsonSerialize(using = UserDtoSerializer.class)
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
     @Digits(integer = Integer.MAX_VALUE, fraction = 0)
     private long id;

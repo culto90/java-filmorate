@@ -1,7 +1,7 @@
 package by.yandex.practicum.filmorate.services;
 
 import by.yandex.practicum.filmorate.exceptions.MpaRatingNotFoundException;
-import by.yandex.practicum.filmorate.models.dictionaries.MpaRating;
+import by.yandex.practicum.filmorate.models.MpaRating;
 import by.yandex.practicum.filmorate.storages.MpaRatingStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +11,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MpaRatingService implements RatingService {
+public class DefaultRatingService implements RatingService {
     private final MpaRatingStorage ratingStorage;
 
     @Autowired
-    public MpaRatingService(MpaRatingStorage ratingStorage) {
+    public DefaultRatingService(MpaRatingStorage ratingStorage) {
         this.ratingStorage = ratingStorage;
     }
 
