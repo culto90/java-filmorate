@@ -88,4 +88,9 @@ public class DefaultFilmService implements FilmService {
 
         return filmStorage.put(foundFilm);
     }
+
+    @Override
+    public Film removeFilmById(long id) {
+        return filmStorage.remove(filmStorage.getById(id));
+    }
 }

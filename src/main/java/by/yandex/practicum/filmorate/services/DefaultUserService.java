@@ -102,4 +102,9 @@ public class DefaultUserService implements UserService {
 
         return foundUser != null;
     }
+
+    @Override
+    public User removeUserById(long id) {
+        return userStorage.remove(userStorage.getById(id));
+    }
 }

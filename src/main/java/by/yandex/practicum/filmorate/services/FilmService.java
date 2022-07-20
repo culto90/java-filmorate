@@ -11,4 +11,5 @@ public interface FilmService {
     Film getFilmById(long id);
     Film addFilm(Film film) throws FilmServiceException;
     Film updateFilm(Film film) throws FilmServiceException;
+    Film removeFilmById(long id);
 }
