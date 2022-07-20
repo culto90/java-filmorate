@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FilmService {
     List<Film> getAllFilms();
-    List<Film> getPopularFilms(int count);
+    List<Film> getPopularFilmsByGenreAndYear(Integer count, Integer genreId, Integer year);
     Film getFilmById(long id);
     Film addFilm(Film film) throws FilmServiceException;
     Film updateFilm(Film film) throws FilmServiceException;

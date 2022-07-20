@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,13 +30,18 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public List<Film> getPopularFilms(int count) {
-        int limit = count;
-        if (limit == 0) {
-            limit = POPULAR_FILM_LIMIT;
+    public List<Film> getPopularFilmsByGenreAndYear(Integer count, Integer genreId, Integer year) {
+        int limit = 0;
+        List<Film> films =  filmStorage.getAll();
+        if (genreId != null) {
+            films = films.stream().filter(film -> film.hasGenre(genreId)).collect(Collectors.toList());
         }
-        return filmStorage.getAll()
-                .stream()
+        if (year != null) {
+            films = films.stream().filter(film -> film.getReleaseDate().getYear() == year).collect(Collectors.toList());
+        }
+        limit = Objects.requireNonNullElse(count, POPULAR_FILM_LIMIT);
+
+        return films.stream()
                 .sorted(Comparator.comparing(Film::getLikeCount).reversed())
                 .limit(limit)
                 .collect(Collectors.toList());
