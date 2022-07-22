@@ -16,10 +16,12 @@ public class Film {
     private MpaRating rating;
     private List<Genre> genres;
     private List<Like> likes;
+    private List<Director> directors;
 
     public Film() {
         this.genres = new ArrayList<>();
         this.likes = new ArrayList<>();
+        this.directors = new ArrayList<>();
     }
 
     public Film(Long id, String name, String description, LocalDate releaseDate, long duration) {
@@ -97,6 +99,10 @@ public class Film {
         this.rating = rating;
     }
 
+    public void setDirectors(List<Director> directors) {
+        this.directors = directors;
+    }
+
     public void setLikeList(List<Like> likes) {
         if (likes == null) {
             this.likes = new ArrayList<>();
@@ -110,6 +116,14 @@ public class Film {
             this.genres = new ArrayList<>();
         } else {
             this.genres = genres.stream().distinct().collect(Collectors.toList());
+        }
+    }
+
+    public void setDirectorList(List<Director> directors) {
+        if (directors == null) {
+            this.directors = null;
+        } else {
+            this.directors = directors.stream().distinct().collect(Collectors.toList());
         }
     }
 
@@ -127,6 +141,10 @@ public class Film {
 
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    public List<Director> getDirectors(){
+        return directors;
     }
 
     public int getLikeCount() {

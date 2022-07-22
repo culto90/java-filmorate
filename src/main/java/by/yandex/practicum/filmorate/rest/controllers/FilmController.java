@@ -1,5 +1,6 @@
 package by.yandex.practicum.filmorate.rest.controllers;
 
+import by.yandex.practicum.filmorate.exceptions.InvalidParameterException;
 import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.rest.converters.FilmDtoToFilmConverter;
@@ -7,8 +8,10 @@ import by.yandex.practicum.filmorate.rest.converters.FilmToFilmDtoConverter;
 import by.yandex.practicum.filmorate.rest.converters.LikeToLikeDtoConverter;
 import by.yandex.practicum.filmorate.rest.dto.FilmDto;
 import by.yandex.practicum.filmorate.rest.dto.LikeDto;
+import by.yandex.practicum.filmorate.services.DirectorService;
 import by.yandex.practicum.filmorate.services.FilmService;
 import by.yandex.practicum.filmorate.services.LikeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +22,11 @@ import java.util.stream.Collectors;
 
 @Validated
 @RestController
+@Slf4j
 public class FilmController {
     private final FilmService filmService;
     private final LikeService likeService;
+    private final DirectorService directorService;
     private final FilmToFilmDtoConverter toFilmDtoConverter;
     private final FilmDtoToFilmConverter toFilmConverter;
     private final LikeToLikeDtoConverter toLikeDtoConverter;
@@ -29,11 +34,13 @@ public class FilmController {
     @Autowired
     public FilmController(FilmService filmService,
                           LikeService likeService,
+                          DirectorService directorService,
                           FilmToFilmDtoConverter toFilmDtoConverter,
                           FilmDtoToFilmConverter toFilmConverter,
                           LikeToLikeDtoConverter toLikeDtoConverter) {
         this.filmService = filmService;
         this.likeService = likeService;
+        this.directorService = directorService;
         this.toFilmDtoConverter = toFilmDtoConverter;
         this.toFilmConverter = toFilmConverter;
         this.toLikeDtoConverter = toLikeDtoConverter;
@@ -80,5 +87,15 @@ public class FilmController {
     @DeleteMapping("/films/{id}/like/{userId}")
     public void removeLikeFromFilm(@PathVariable long id, @PathVariable long userId) {
         likeService.removeLike(id, userId);
+    }
+
+    @GetMapping("/films/director/{directorId}")
+    public List<Film> getDirectorFilmsSorted(@PathVariable long directorId,
+                                             @RequestParam String sortBy) {
+        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
+            throw new InvalidParameterException("Неверный параметр запроса GET /films/director/{directorId}?sortBy=");
+        }
+        log.trace("Получен GET-запрос на список фильмов режиссёра {}, сортировка {}.", directorId, sortBy);
+        return directorService.getDirectorFilmsSorted(directorId, sortBy);
     }
 }

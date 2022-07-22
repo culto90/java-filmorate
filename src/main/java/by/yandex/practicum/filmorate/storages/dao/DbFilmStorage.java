@@ -11,15 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Primary
 @Repository
@@ -34,7 +32,7 @@ public class DbFilmStorage implements FilmStorage {
     private static final String SELECT_CORRESPONDING_FILM = "SELECT film_id, name, description, release_date, " +
             "duration, rate, mpa_rating_id FROM films WHERE film_id = ?";
     private static final String UPDATE_FILM = "UPDATE films SET name = ?, description = ?, release_date = ?, " +
-            "duration = ?, rate = ?, mpa_rating_id = ?";
+            "duration = ?, rate = ?, mpa_rating_id = ? WHERE film_id = ?";
     private static final String DELETE_CORRESPONDING_FILM = "DELETE FROM likes WHERE film_id = ?;" +
             "DELETE FROM films WHERE film_id = ?";
     private static final String DELETE_ALL_FILMS = "DELETE FROM likes;" +
@@ -68,6 +66,7 @@ public class DbFilmStorage implements FilmStorage {
                     this::mapGenreRowToFilm,
                     film.getId());
             film.setGenreList(genres);
+            film.setDirectors(applyDirectors(film.getId()));
         }
         return films;
     }
@@ -92,8 +91,21 @@ public class DbFilmStorage implements FilmStorage {
                     this::mapGenreRowToFilm,
                     film.getId());
             film.setGenreList(genres);
+            film.setDirectors(applyDirectors(film.getId()));
         }
         return film;
+    }
+
+    private List<Director> applyDirectors (long filmId) {
+        String sqlQuery =   "SELECT film_directors.DIRECTOR_ID, directors.NAME FROM film_directors " +
+                            "LEFT OUTER JOIN directors ON film_directors.DIRECTOR_ID = directors.DIRECTOR_ID " +
+                            "WHERE FILM_ID = ?";
+        return jdbcTemplate.query(sqlQuery, new RowMapper<Director>() {
+            @Override
+            public Director mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Director(rs.getLong("director_id"), rs.getString("name"));
+            }
+        }, filmId);
     }
 
     @Override
@@ -118,18 +130,39 @@ public class DbFilmStorage implements FilmStorage {
         jdbcTemplate.update(DELETE_ALL_FILMS);
     }
 
+    public List<Film> getDirectorFilms(long directorId) {
+        String sqlQuery =   "SELECT films.* FROM film_directors " +
+                            "LEFT OUTER JOIN films ON films.FILM_ID = film_directors.FILM_ID " +
+                            "WHERE film_directors.DIRECTOR_ID = ?";
+        List<Film> films = jdbcTemplate.query(sqlQuery, this::mapRowToFilm, directorId);
+        for (Film film : films) {
+            List<Like> likes = jdbcTemplate.query(SELECT_ALL_LIKES_CORRESPONDING_FILM,
+                    this::mapLikeRowToFilm,
+                    film.getId());
+            film.setLikeList(likes);
+            List<Genre> genres = jdbcTemplate.query(SELECT_ALL_GENRES_CORRESPONDING_FILM,
+                    this::mapGenreRowToFilm,
+                    film.getId());
+            film.setGenreList(genres);
+            film.setDirectors(applyDirectors(film.getId()));
+        }
+        return films; // Получаем список всех фильмов режиссёра для последующей сортировки
+    }
+
     private Film insertFilm(Film film) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
         Long returnedId = simpleJdbcInsert.executeAndReturnKey(this.filmToMap(film)).longValue();
         insertGenres(film.getGenres(), returnedId);
+        insertDirectors(film.getDirectors(), returnedId);
         return this.getById(returnedId);
     }
 
     private Film updateFilm(Film film) {
         MpaRating rating = film.getRating();
         List<Genre> genres = film.getGenres();
+        List<Director> directors = film.getDirectors();
         Long ratingId = null;
         if (rating != null) {
             ratingId = rating.getId();
@@ -140,13 +173,21 @@ public class DbFilmStorage implements FilmStorage {
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getRate(),
-                ratingId
+                ratingId,
+                film.getId()
         );
         jdbcTemplate.update(DELETE_ALL_GENRES_CORRESPONDING_FILM, film.getId());
         if (!genres.isEmpty()) {
             insertGenres(genres, film.getId());
         }
-        return this.getById(film.getId());
+        String sqlQuery = "DELETE FROM film_directors WHERE FILM_ID = ?";
+        jdbcTemplate.update(sqlQuery, film.getId());
+        insertDirectors(directors, film.getId());
+        Film updatedFilm = getById(film.getId());
+        if (directors == null) {
+            updatedFilm.setDirectors(null);
+        }
+        return updatedFilm;
     }
 
     private void insertGenres(List<Genre> genres, Long filmId) {
@@ -156,6 +197,15 @@ public class DbFilmStorage implements FilmStorage {
                         .withTableName("film_genres")
                         .usingGeneratedKeyColumns("film_genre_id");
                 genresInsert.executeAndReturnKey(this.genreToMap(genre, filmId)).longValue();
+            }
+        }
+    }
+
+    private void insertDirectors(List<Director> directors, long filmId) {
+        if (directors != null) {
+            for (Director director : directors) {
+                String sqlQuery = "MERGE INTO film_directors (FILM_ID, DIRECTOR_ID) VALUES (?,?)";
+                jdbcTemplate.update(sqlQuery, filmId, director.getId());
             }
         }
     }

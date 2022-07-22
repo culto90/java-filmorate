@@ -26,6 +26,7 @@ public class FilmToFilmDtoConverter implements Converter<Film, FilmDto> {
         filmDto.setMpa(film.getRating());
         filmDto.setGenres(film.getGenres());
         filmDto.setLikes(film.getLikes());
+        filmDto.setDirectors(film.getDirectors());
         return filmDto;
     }
 }
