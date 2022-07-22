@@ -34,7 +34,7 @@ public class DbFilmStorage implements FilmStorage {
     private static final String SELECT_CORRESPONDING_FILM = "SELECT film_id, name, description, release_date, " +
             "duration, rate, mpa_rating_id FROM films WHERE film_id = ?";
     private static final String UPDATE_FILM = "UPDATE films SET name = ?, description = ?, release_date = ?, " +
-            "duration = ?, rate = ?, mpa_rating_id = ?";
+            "duration = ?, rate = ?, mpa_rating_id = ? WHERE film_id = ?";
     private static final String DELETE_CORRESPONDING_FILM = "DELETE FROM likes WHERE film_id = ?;" +
             "DELETE FROM films WHERE film_id = ?";
     private static final String DELETE_ALL_FILMS = "DELETE FROM likes;" +
@@ -140,7 +140,8 @@ public class DbFilmStorage implements FilmStorage {
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getRate(),
-                ratingId
+                ratingId,
+                film.getId()
         );
         jdbcTemplate.update(DELETE_ALL_GENRES_CORRESPONDING_FILM, film.getId());
         if (!genres.isEmpty()) {

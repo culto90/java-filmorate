@@ -148,6 +148,10 @@ public class Film {
         this.genres.remove(genre);
     }
 
+    public boolean hasGenre(long genreId) {
+        return genres.stream().anyMatch(genre -> genre.getId() == genreId);
+    }
+
     @Override
     public String toString() {
         return "Film(" +
