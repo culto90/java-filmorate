@@ -31,7 +31,7 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public List<Film> getPopularFilmsByGenreAndYear(Integer count, Integer genreId, Integer year) {
-        int limit = 0;
+        int limit = Objects.requireNonNullElse(count, POPULAR_FILM_LIMIT);
         List<Film> films =  filmStorage.getAll();
         if (genreId != null) {
             films = films.stream().filter(film -> film.hasGenre(genreId)).collect(Collectors.toList());
@@ -39,7 +39,6 @@ public class DefaultFilmService implements FilmService {
         if (year != null) {
             films = films.stream().filter(film -> film.getReleaseDate().getYear() == year).collect(Collectors.toList());
         }
-        limit = Objects.requireNonNullElse(count, POPULAR_FILM_LIMIT);
 
         return films.stream()
                 .sorted(Comparator.comparing(Film::getLikeCount).reversed())
