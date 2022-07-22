@@ -12,4 +12,5 @@ public interface FilmService {
     Film addFilm(Film film) throws FilmServiceException;
     Film updateFilm(Film film) throws FilmServiceException;
     Film removeFilmById(long id);
+    List<Film> getCommonFilms(Long userId, Long friendId);
 }
