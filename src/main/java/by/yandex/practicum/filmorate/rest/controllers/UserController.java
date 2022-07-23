@@ -2,12 +2,15 @@ package by.yandex.practicum.filmorate.rest.controllers;
 
 import by.yandex.practicum.filmorate.exceptions.UserServiceException;
 import by.yandex.practicum.filmorate.models.User;
+import by.yandex.practicum.filmorate.rest.converters.FilmToFilmDtoConverter;
 import by.yandex.practicum.filmorate.rest.converters.FriendshipToFriendshipDtoConverter;
 import by.yandex.practicum.filmorate.rest.converters.UserDtoToUserConverter;
+import by.yandex.practicum.filmorate.rest.dto.FilmDto;
 import by.yandex.practicum.filmorate.rest.dto.FriendshipDto;
 import by.yandex.practicum.filmorate.rest.dto.UserDto;
 import by.yandex.practicum.filmorate.rest.converters.UserToUserDtoConverter;
 import by.yandex.practicum.filmorate.services.FriendshipService;
+import by.yandex.practicum.filmorate.services.RecommendationsService;
 import by.yandex.practicum.filmorate.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -26,17 +29,22 @@ public class UserController {
     private final UserDtoToUserConverter dtoToUserConverter;
     private final FriendshipToFriendshipDtoConverter friendshipConverter;
 
+    private final RecommendationsService recommendationsService;
+    private final FilmToFilmDtoConverter toFilmDtoConverter;
+
     @Autowired
     public UserController(UserService userService,
                           FriendshipService friendshipService,
                           UserToUserDtoConverter toUserDtoConverter,
                           UserDtoToUserConverter dtoToUserConverter,
-                          FriendshipToFriendshipDtoConverter friendshipConverter) {
+                          FriendshipToFriendshipDtoConverter friendshipConverter, RecommendationsService recommendationsService, FilmToFilmDtoConverter toFilmDtoConverter) {
         this.userService = userService;
         this.friendshipService = friendshipService;
         this.toUserDtoConverter = toUserDtoConverter;
         this.dtoToUserConverter = dtoToUserConverter;
         this.friendshipConverter = friendshipConverter;
+        this.recommendationsService = recommendationsService;
+        this.toFilmDtoConverter = toFilmDtoConverter;
     }
 
     @GetMapping("/users")
@@ -91,5 +99,12 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public UserDto removeUserById(@PathVariable long id) {
         return toUserDtoConverter.convert(userService.removeUserById(id));
+    }
+
+    @GetMapping("/users/{id}/recommendations")
+    public List<FilmDto> getRecommendations(@PathVariable long id) {
+        return recommendationsService.getRecommendationsFilms(id).stream()
+                .map(toFilmDtoConverter::convert)
+                .collect(Collectors.toList());
     }
 }

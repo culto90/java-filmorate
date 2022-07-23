@@ -47,6 +47,20 @@ public class DbFilmStorage implements FilmStorage {
             "FROM genres g, film_genres fg WHERE g.genre_id = fg.genre_id AND fg.film_id = ?";
     private static final String DELETE_ALL_GENRES_CORRESPONDING_FILM = "DELETE FROM film_genres WHERE film_id = ?";
 
+    private static final String SELECT_FILMS_FRIENDS ="SELECT * FROM FILMS WHERE FILM_ID IN "+
+            "(SELECT  film_id" +
+            " FROM likes" +
+            " WHERE film_id NOT IN " +
+            "(SELECT film_id FROM likes WHERE user_id = ?)" +
+            " AND user_id IN " +
+            "(SELECT  "+
+            " user_id AS u," +
+            " FROM likes" +
+            " WHERE film_id IN " +
+            "(SELECT film_id FROM likes WHERE user_id = ?)"+
+            " GROUP BY u" +
+            " ORDER BY COUNT (film_id) DESC))";
+
     @Autowired
     public DbFilmStorage(JdbcTemplate jdbcTemplate,
                          MpaRatingCachedDictionary mpaRatingCachedDictionary,
@@ -56,6 +70,20 @@ public class DbFilmStorage implements FilmStorage {
         this.genreCachedDictionary = genreCachedDictionary;
     }
 
+    public List<Film> getRecommendationsFilms(Long id) {
+        List<Film> films = jdbcTemplate.query(SELECT_FILMS_FRIENDS, this::mapRowToFilm, id,id);
+        for (Film film : films) {
+            List<Like> likes = jdbcTemplate.query(SELECT_ALL_LIKES_CORRESPONDING_FILM,
+                    this::mapLikeRowToFilm,
+                    film.getId());
+            film.setLikeList(likes);
+            List<Genre> genres = jdbcTemplate.query(SELECT_ALL_GENRES_CORRESPONDING_FILM,
+                    this::mapGenreRowToFilm,
+                    film.getId());
+            film.setGenreList(genres);
+        }
+        return films;
+    }
     @Override
     public List<Film> getAll() {
         List<Film> films = jdbcTemplate.query(SELECT_ALL_FILMS, this::mapRowToFilm);
