@@ -2,8 +2,12 @@ package by.yandex.practicum.filmorate.services;
 
 import by.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
+import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import by.yandex.practicum.filmorate.models.Film;
+import by.yandex.practicum.filmorate.models.Like;
+import by.yandex.practicum.filmorate.models.User;
 import by.yandex.practicum.filmorate.storages.FilmStorage;
+import by.yandex.practicum.filmorate.storages.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,9 +23,12 @@ public class DefaultFilmService implements FilmService {
     private final static Integer POPULAR_FILM_LIMIT = 10;
     private final FilmStorage filmStorage;
 
+    private final UserStorage userStorage;
+
     @Autowired
-    public DefaultFilmService(FilmStorage filmStorage) {
+    public DefaultFilmService(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
     @Override
@@ -97,5 +104,27 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film removeFilmById(long id) {
         return filmStorage.remove(filmStorage.getById(id));
+    }
+
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        User user = userStorage.getById(userId);
+        User friend = userStorage.getById(friendId);
+
+        if (user == null) {
+            throw new UserNotFoundException("User with id = '" + userId + "' not found.");
+        }
+
+        if (friend == null) {
+            throw new UserNotFoundException("Friend with id = '" + userId + "' not found.");
+        }
+
+        List<Film> userFilms = user.getLikes().stream().map(Like::getFilm).collect(Collectors.toList());
+        List<Film> friendFilms = user.getLikes().stream().map(Like::getFilm).collect(Collectors.toList());
+
+        return userFilms.stream()
+                .filter(friendFilms::contains)
+                .sorted(Comparator.comparing(Film::getLikeCount).reversed())
+                .collect(Collectors.toList());
     }
 }

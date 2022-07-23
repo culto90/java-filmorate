@@ -88,4 +88,13 @@ public class FilmController {
     public FilmDto removeFilmById(@PathVariable long id) {
         return toFilmDtoConverter.convert(filmService.removeFilmById(id));
     }
+
+    @GetMapping("/films/common")
+    public List<FilmDto> getCommonFilms(@RequestParam(name = "userId") Long userId,
+                                        @RequestParam(name = "friendId") Long friendId) {
+        return filmService.getCommonFilms(userId, friendId)
+                .stream()
+                .map(toFilmDtoConverter::convert)
+                .collect(Collectors.toList());
+    }
 }
