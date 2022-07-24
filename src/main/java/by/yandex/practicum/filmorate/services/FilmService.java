@@ -13,4 +13,5 @@ public interface FilmService {
     Film updateFilm(Film film) throws FilmServiceException;
     Film removeFilmById(long id);
     List<Film> getCommonFilms(Long userId, Long friendId);
+    List<Film> searchFilm(String query, String by);
 }
