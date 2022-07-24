@@ -87,4 +87,9 @@ public class UserController {
     public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
         friendshipService.removeFriend(id, friendId);
     }
+
+    @DeleteMapping("/users/{id}")
+    public UserDto removeUserById(@PathVariable long id) {
+        return toUserDtoConverter.convert(userService.removeUserById(id));
+    }
 }

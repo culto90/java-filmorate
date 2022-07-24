@@ -60,8 +60,10 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public List<FilmDto> getPopularFilms(@RequestParam(defaultValue = "10") String count ) {
-        return filmService.getPopularFilms(Integer.parseInt(count))
+    public @ResponseBody List<FilmDto> getPopularFilms(@RequestParam(required = false, name = "count") Integer count,
+                                                       @RequestParam(required = false, name = "genreId") Integer genreId,
+                                                       @RequestParam(required = false, name = "year") Integer year) {
+        return filmService.getPopularFilmsByGenreAndYear(count, genreId, year)
                 .stream()
                 .map(toFilmDtoConverter::convert)
                 .collect(Collectors.toList());
@@ -94,5 +96,19 @@ public class FilmController {
                                              @RequestParam String sortBy) {
         log.trace("Получен GET-запрос на список фильмов режиссёра {}, сортировка {}.", directorId, sortBy);
         return directorService.getDirectorFilmsSorted(directorId, sortBy);
+    }
+
+    @DeleteMapping("/films/{id}")
+    public FilmDto removeFilmById(@PathVariable long id) {
+        return toFilmDtoConverter.convert(filmService.removeFilmById(id));
+    }
+
+    @GetMapping("/films/common")
+    public List<FilmDto> getCommonFilms(@RequestParam(name = "userId") Long userId,
+                                        @RequestParam(name = "friendId") Long friendId) {
+        return filmService.getCommonFilms(userId, friendId)
+                .stream()
+                .map(toFilmDtoConverter::convert)
+                .collect(Collectors.toList());
     }
 }

@@ -95,6 +95,9 @@ public class DefaultFriendshipService implements FriendshipService {
 
     @Override
     public List<User> getFriendList(Long userId) {
+        if (userStorage.getById(userId) == null) {
+            throw new UserNotFoundException("User with id = '" + userId + "' not found.");
+        }
         List<Friendship> friendships = friendshipStorage.getAll();
         return friendships.stream()
                 .filter(f -> f.getUser().getId().equals(userId))

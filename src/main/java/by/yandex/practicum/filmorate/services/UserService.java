@@ -10,4 +10,5 @@ public interface UserService {
     User getUserById(long id);
     User addUser(User user) throws UserServiceException;
     User updateUser(User user) throws UserServiceException;
+    User removeUserById(long id);
 }
