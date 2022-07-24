@@ -92,9 +92,6 @@ public class FilmController {
     @GetMapping("/films/director/{directorId}")
     public List<Film> getDirectorFilmsSorted(@PathVariable long directorId,
                                              @RequestParam String sortBy) {
-        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
-            throw new InvalidParameterException("Неверный параметр запроса GET /films/director/{directorId}?sortBy=");
-        }
         log.trace("Получен GET-запрос на список фильмов режиссёра {}, сортировка {}.", directorId, sortBy);
         return directorService.getDirectorFilmsSorted(directorId, sortBy);
     }

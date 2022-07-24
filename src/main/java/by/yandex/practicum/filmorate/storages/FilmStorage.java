@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface FilmStorage extends Storage<Film, Long>{
 
-    List<Film> getDirectorFilms(long directorId);
+    List<Film> getFilmsByDirectorId(long directorId);
 
 }

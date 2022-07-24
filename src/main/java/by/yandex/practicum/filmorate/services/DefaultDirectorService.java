@@ -1,5 +1,8 @@
 package by.yandex.practicum.filmorate.services;
 
+import by.yandex.practicum.filmorate.exceptions.DirectorNotFoundException;
+import by.yandex.practicum.filmorate.exceptions.DirectorServiceException;
+import by.yandex.practicum.filmorate.exceptions.InvalidParameterException;
 import by.yandex.practicum.filmorate.models.Director;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.storages.DirectorStorage;
@@ -25,26 +28,21 @@ public class DefaultDirectorService implements DirectorService{
 
     @Override
     public List<Film> getDirectorFilmsSorted(long directorId, String type) {
+        if (!(type.equals("year") || type.equals("likes"))) {
+            throw new InvalidParameterException("Неверный параметр запроса GET /films/director/{directorId}?sortBy=");
+        }
         log.trace("GET-запрос на список фильмов режиссёра {}, сортировка {} передан в БД.", directorId, type);
-        getById(directorId);        // проверяем, существует ли такой директор
-        List<Film> films = filmStorage.getDirectorFilms(directorId);
+        if (directorStorage.getById(directorId) == null) {
+            throw new DirectorNotFoundException(String.format("Режиссёр ID %d не найден.", directorId));
+        }
+        List<Film> films = filmStorage.getFilmsByDirectorId(directorId);
         switch (type) {
             case "likes": {
-                films.sort(new Comparator<Film>() {
-                    @Override
-                    public int compare(Film o1, Film o2) {
-                        return o1.getLikeCount() - o2.getLikeCount();
-                    }
-                });
+                films.sort(Comparator.comparingInt(Film::getLikeCount));
                 break;
             }
             case "year": {
-                films.sort(new Comparator<Film>() {
-                    @Override
-                    public int compare(Film o1, Film o2) {
-                        return o1.getReleaseDate().compareTo(o2.getReleaseDate());
-                    }
-                });
+                films.sort(Comparator.comparing(Film::getReleaseDate));
                 break;
             }
         }
@@ -58,11 +56,18 @@ public class DefaultDirectorService implements DirectorService{
 
     @Override
     public Director getById(long directorId) {
-        return directorStorage.getById(directorId);
+        Director director = directorStorage.getById(directorId);
+        if (director == null) {
+            throw new DirectorNotFoundException(String.format("Режиссёр ID %d не найден.", directorId));
+        }
+        return director;
     }
 
     @Override
-    public Director add(Director director) {
+    public Director add(Director director) throws DirectorServiceException {
+        if (director == null) {
+            throw new DirectorServiceException("Cannot add empty director.");
+        }
         return directorStorage.add(director);
     }
 

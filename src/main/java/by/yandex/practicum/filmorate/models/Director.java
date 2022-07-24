@@ -1,18 +1,30 @@
 package by.yandex.practicum.filmorate.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Director {
     private Long id;
-    @NotBlank(message = "Имя режиссёра не может быть пустым.")
-    @NotNull
     private String name;
+
+    public Director() {
+    }
+
+    public Director(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

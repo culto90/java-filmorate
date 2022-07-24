@@ -3,7 +3,6 @@ package by.yandex.practicum.filmorate.rest.handlers;
 
 import by.yandex.practicum.filmorate.exceptions.*;
 import by.yandex.practicum.filmorate.models.ErrorInfo;
-import by.yandex.practicum.filmorate.models.ErrorResponse;
 import by.yandex.practicum.filmorate.rest.converters.ErrorInfoToErrorInfoDtoConverter;
 import by.yandex.practicum.filmorate.rest.dto.ErrorInfoDto;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -89,6 +87,14 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
+    @ExceptionHandler(value = DirectorServiceException.class)
+    protected ResponseEntity<Object> handleDirectorServiceException(DirectorServiceException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
     @ExceptionHandler(value = FilmStorageException.class)
     protected ResponseEntity<Object> handleFilmStorageException(FilmStorageException ex, WebRequest request) {
         log.info(ex.getMessage());
@@ -153,16 +159,20 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidParameterException(final InvalidParameterException e) {
-        return new ErrorResponse(String.format("Ошибка: %s", e.getMessage()));
+    @ExceptionHandler(value = InvalidParameterException.class)
+    protected ResponseEntity<Object> handleInvalidParameterException(InvalidParameterException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleDirectorNotFoundException(final DirectorNotFoundException e) {
-        return new ErrorResponse(String.format("Ошибка: %s", e.getMessage()));
+    @ExceptionHandler(value = DirectorNotFoundException.class)
+    protected ResponseEntity<Object> handleDirectorNotFoundException(DirectorNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @Override

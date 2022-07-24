@@ -99,10 +99,6 @@ public class Film {
         this.rating = rating;
     }
 
-    public void setDirectors(List<Director> directors) {
-        this.directors = directors;
-    }
-
     public void setLikeList(List<Like> likes) {
         if (likes == null) {
             this.likes = new ArrayList<>();
