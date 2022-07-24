@@ -87,6 +87,14 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
+    @ExceptionHandler(value = DirectorServiceException.class)
+    protected ResponseEntity<Object> handleDirectorServiceException(DirectorServiceException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
     @ExceptionHandler(value = FilmStorageException.class)
     protected ResponseEntity<Object> handleFilmStorageException(FilmStorageException ex, WebRequest request) {
         log.info(ex.getMessage());
@@ -149,6 +157,22 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
         ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
         return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value = InvalidParameterException.class)
+    protected ResponseEntity<Object> handleInvalidParameterException(InvalidParameterException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = DirectorNotFoundException.class)
+    protected ResponseEntity<Object> handleDirectorNotFoundException(DirectorNotFoundException ex, WebRequest request) {
+        log.info(ex.getMessage());
+        ErrorInfo errorInfo = new ErrorInfo(getRequestURI(request), ex.getMessage());
+        ErrorInfoDto errorInfoDto = errorInfoDtoConverter.convert(errorInfo);
+        return handleExceptionInternal(ex, errorInfoDto, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @Override

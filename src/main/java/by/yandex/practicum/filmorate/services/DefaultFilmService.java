@@ -95,6 +95,7 @@ public class DefaultFilmService implements FilmService {
         foundFilm.setRate(updatedFilm.getRate());
         foundFilm.setRating(updatedFilm.getRating());
         foundFilm.setGenreList(updatedFilm.getGenres());
+        foundFilm.setDirectorList(updatedFilm.getDirectors());
         foundFilm.setLikeList(updatedFilm.getLikes());
         log.info("Updated film: new value: {}", foundFilm);
 

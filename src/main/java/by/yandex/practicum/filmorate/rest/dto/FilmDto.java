@@ -1,5 +1,6 @@
 package by.yandex.practicum.filmorate.rest.dto;
 
+import by.yandex.practicum.filmorate.models.Director;
 import by.yandex.practicum.filmorate.models.Genre;
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.models.MpaRating;
@@ -35,4 +36,5 @@ public class FilmDto {
     private MpaRating mpa;
     private List<Genre> genres;
     private List<Like> likes;
+    private List<Director> directors;
 }
