@@ -3,6 +3,7 @@ package by.yandex.practicum.filmorate.services;
 import by.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import by.yandex.practicum.filmorate.exceptions.FilmServiceException;
 import by.yandex.practicum.filmorate.exceptions.UserNotFoundException;
+import by.yandex.practicum.filmorate.models.Director;
 import by.yandex.practicum.filmorate.models.Film;
 import by.yandex.practicum.filmorate.models.Like;
 import by.yandex.practicum.filmorate.models.User;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +41,7 @@ public class DefaultFilmService implements FilmService {
     @Override
     public List<Film> getPopularFilmsByGenreAndYear(Integer count, Integer genreId, Integer year) {
         int limit = Objects.requireNonNullElse(count, POPULAR_FILM_LIMIT);
-        List<Film> films =  filmStorage.getAll();
+        List<Film> films = filmStorage.getAll();
         if (genreId != null) {
             films = films.stream().filter(film -> film.hasGenre(genreId)).collect(Collectors.toList());
         }
@@ -127,5 +129,49 @@ public class DefaultFilmService implements FilmService {
                 .filter(friendFilms::contains)
                 .sorted(Comparator.comparing(Film::getLikeCount).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Film> searchFilm(String query, String by) {
+        if (query == null & by == null) {
+            return getPopularFilmsByGenreAndYear(getAllFilms().size(), null, null);
+        } else if (query != null & by != null) {
+            List<Film> list = new ArrayList<>();
+            switch (by) {
+                case "director":
+                    list.addAll(searchFilmByDirector(query));
+                    break;
+                case "title":
+                    list.addAll(searchFilmByTitle(query));
+                    break;
+                case "title,director":
+                case "director,title":
+                    list.addAll(searchFilmByDirector(query));
+                    list.addAll(searchFilmByTitle(query));
+                    break;
+                default:
+                    throw new FilmServiceException("Неверный параметр поиска");
+            }
+            return list;
+        } else {
+            throw new FilmServiceException("Для поиска необходимы параметры запроса QUERY и BY");
+        }
+    }
+
+    List<Film> searchFilmByTitle(String query) {
+        return getAllFilms().stream()
+                .filter(f -> f.getName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    List<Film> searchFilmByDirector(String query) {
+        return getAllFilms().stream()
+                .filter(f -> searchInDirectorList(f.getDirectors(), query))
+                .collect(Collectors.toList());
+    }
+
+    boolean searchInDirectorList(List<Director> list, String query) {
+        return list.stream()
+                .anyMatch(d -> d.getName().toLowerCase().contains(query.toLowerCase()));
     }
 }

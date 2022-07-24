@@ -111,4 +111,12 @@ public class FilmController {
                 .map(toFilmDtoConverter::convert)
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("films/search")
+    public List<FilmDto> searchFilm(@RequestParam(required = false) String query,
+                                    @RequestParam(required = false) String by) {
+        return filmService.searchFilm(query, by).stream()
+                .map(toFilmDtoConverter::convert)
+                .collect(Collectors.toList());
+    }
 }
